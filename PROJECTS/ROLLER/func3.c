@@ -2552,7 +2552,7 @@ void DrawCar(uint8 *pScrBuf, eCarDesignIndex iCarDesignIndex, float fDistance, i
         CarZOrder[uiZOrderOffset / sizeof(tCarZOrderEntry)].iPolygonLink = pPols->nNextPolIdx;
 
         // Calculate max z val for depth sorting
-        if ((pPols->uiTex & SURFACE_FLAG_ANMS_LIVERY) == 0)
+        if ((pPols->uiTex & CAR_FLAG_ANMS_LIVERY) == 0)
         {
           // Find max Z among verts (furthest from camera)
           if (CarPt[pPols->verts[2]].view.fZ <= (double)CarPt[pPols->verts[3]].view.fZ)
@@ -2738,7 +2738,7 @@ void DrawCar(uint8 *pScrBuf, eCarDesignIndex iCarDesignIndex, float fDistance, i
       if (iIsBack) {
         uiTex = CarDesigns[uiCarDesignOffset / 0x1C].pBacks[iPolToDraw];
         uiTex |= SURFACE_FLAG_FLIP_BACKFACE; 
-      } else if ((uiTex & SURFACE_FLAG_ANMS_LOOKUP) != 0)
+      } else if ((uiTex & CAR_FLAG_ANMS_LOOKUP) != 0)
       {
         if ((uint8)uiTex >= 4u)
           uiTex = pAnms[(uint8)uiTex].framesAy[iAnimFrame];

@@ -2690,7 +2690,7 @@ LABEL_171:
         uiJumpFlag = abs(iTrackColorValue) & SURFACE_FLAG_NON_MAGNETIC;
         if (pCar->fFinalSpeed < 0.0)
           uiJumpFlag = 0;
-        if ((iTrackColorValue & SURFACE_FLAG_ANMS_LIVERY) != 0 && pCar->fFinalSpeed > 240.0)
+        if ((iTrackColorValue & SURFACE_FLAG_PREVENT_JUMP) != 0 && pCar->fFinalSpeed > 240.0)
           uiJumpFlag = 0;
         iCollisionFlag = 0;
         if ((TrakColour[pCar->nCurrChunk][1] & SURFACE_FLAG_WALL_22) != 0 && fTrackCenterLine >= fabs(pCar->pos.fY) - fCarHalfWidthProjected) {
@@ -3505,13 +3505,15 @@ void checkplacement(tCar *pCar)
     iNewChunk = TRAK_LEN - 1;
   if (iNewChunk == -1)
     iNewChunk = 0;
-  //if ((LODWORD(pCar->fHealth) & 0x7FFFFFFF) == 0 && !numstops)// Reset health to 100 if car has zero health and not at a stop
-  if (fabs(pCar->fHealth) == 0 && !numstops)// Reset health to 100 if car has zero health and not at a stop
+  //if ((LODWORD(pCar->fHealth) & 0x7FFFFFFF) == 0 && !numstops)// Reset health to 100 if car has zero health and there's no pit boxes
+  if (fabs(pCar->fHealth) == 0 && !numstops)// Reset health to 100 if car has zero health and there's no pit boxes
     pCar->fHealth = 100.0;
   //if ((LODWORD(pCar->fHealth) & 0x7FFFFFFF) != 0)// Handle placement for cars with health (alive cars)
   if (fabs(pCar->fHealth) > FLT_EPSILON)// Handle placement for cars with health (alive cars)
-  {                                             // Find a valid track chunk without collision barriers
-    while ((TrakColour[iNewChunk][0] & 0xA420000) != 0 && (TrakColour[iNewChunk][1] & 0xA420000) != 0 && (TrakColour[iNewChunk][2] & 0xA420000) != 0) {
+  {                                             // Find a valid track chunk
+    while ((TrakColour[iNewChunk][0] & (SURFACE_FLAG_NO_SPAWN | SURFACE_FLAG_PIT | SURFACE_FLAG_WALL_22 | SURFACE_FLAG_SKIP_RENDER)) != 0
+           && (TrakColour[iNewChunk][1] & (SURFACE_FLAG_NO_SPAWN | SURFACE_FLAG_PIT | SURFACE_FLAG_WALL_22 | SURFACE_FLAG_SKIP_RENDER)) != 0
+           && (TrakColour[iNewChunk][2] & (SURFACE_FLAG_NO_SPAWN | SURFACE_FLAG_PIT | SURFACE_FLAG_WALL_22 | SURFACE_FLAG_SKIP_RENDER)) != 0) {
       if (++iNewChunk == TRAK_LEN)
         iNewChunk ^= TRAK_LEN;
     }
@@ -3524,9 +3526,9 @@ void checkplacement(tCar *pCar)
     iBackupChunk = nCurrChunk;
     pCar->nCurrChunk = iNewChunk;
     do {
-      iRandValue2 = rand();                     // Generate random lane (0-2) that doesn't have collision barriers
+      iRandValue2 = rand();                     // Generate random lane (0-2)
       uiLaneType = GetHighOrderRand(3, iRandValue2);
-    } while ((TrakColour[iNewChunk][uiLaneType] & 0xA420000) != 0);
+    } while ((TrakColour[iNewChunk][uiLaneType] & (SURFACE_FLAG_NO_SPAWN | SURFACE_FLAG_PIT | SURFACE_FLAG_WALL_22 | SURFACE_FLAG_SKIP_RENDER)) != 0);
     iCarCounter = 0;
     if (numcars > 0)                          // Check for collision with other cars in same lane
     {
@@ -7265,7 +7267,7 @@ void findnearsection(tCar *pCar, int *piNearestChunk)
       --iBackwardGroundIdx;
     } while (iBackwardChunkIdx > iBackwardMainEnd);
   }
-  if ((TrakColour[iLastValidChunk][1] & 0x200) == 0)// Check if not on special track section - if so, search extra chunks
+  if ((TrakColour[iLastValidChunk][1] & SURFACE_FLAG_NO_EXTRAS) == 0)// Check if not on special track section - if so, search extra chunks
   {
     iForwardExtraStart = pTrakView->nForwardExtraStart;
     iForwardExtraEnd = pTrakView->byForwardExtraChunks + iForwardExtraStart;
