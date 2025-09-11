@@ -1623,8 +1623,8 @@ LABEL_117:
           iPolygonResult = iPolygonCount;
         CarZOrder[iPolygonLoopIdx].iPolygonIndex = iPolygonResult;
         CarZOrder[iPolygonLoopIdx].iPolygonLink = pPols->nNextPolIdx;
-        // SURFACE_FLAG_ANMS_LIVERY
-        if ((pPols->uiTex & SURFACE_FLAG_ANMS_LIVERY) == 0) {
+        // CAR_FLAG_ANMS_LIVERY
+        if ((pPols->uiTex & CAR_FLAG_ANMS_LIVERY) == 0) {
           if (CarPt[pPols->verts[2]].view.fZ <= (double)CarPt[pPols->verts[3]].view.fZ)
             fZDepthMax1 = CarPt[pPols->verts[3]].view.fZ;
           else
@@ -1913,7 +1913,7 @@ LABEL_117:
             uiTextureSurface = CarDesigns[dwCarDesignOffset / 0x1C].pBacks[iPolygonIdx];
             uiTextureSurface |= SURFACE_FLAG_FLIP_BACKFACE;
             //BYTE1(uiTextureSurface) |= 0x20u;
-          } else if ((uiTextureSurface & SURFACE_FLAG_ANMS_LOOKUP) != 0) {
+          } else if ((uiTextureSurface & CAR_FLAG_ANMS_LOOKUP) != 0) {
             pAnimation = &pAnms[(uint8)uiTextureSurface];
             if (byTextureIndex >= 4)
               uiTextureSurface = pAnimation->framesAy[iAnimationOffset / 4u];
