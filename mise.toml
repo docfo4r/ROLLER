@@ -1,8 +1,8 @@
 [tools]
 python = "3"
+"ubi:zigtools/zls" = "0.15.0"
 usage = "latest"
 zig = "0.15.1"
-zls = "0.15.0"
 
 [tasks.build]
 description = "Build for specific platform"
