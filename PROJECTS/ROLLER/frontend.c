@@ -1075,7 +1075,7 @@ void select_screen()
         DrawCar(scrbuf + 34640, CAR_DESIGN_F1WACK, 6000.0, 1280, 0);
       else
         DrawCar(scrbuf + 34640, iBlockIdx, 2200.0, 1280, 0);
-      if (iBlockIdx < CAR_DESIGN_ZIZIN2)
+      if (iBlockIdx < CAR_DESIGN_SUICYCO)
         display_block(scrbuf, front_vga[3], iBlockIdx, 190, 356, 0);
     }
     display_block(scrbuf, front_vga[5], player_type, -4, 247, 0);
@@ -1960,7 +1960,7 @@ void select_car()
   }
   iZoomDistance = 2000;                         // Setup 3D car zoom animation: start at 2000 units, zoom out to 40000 (-2000 speed)
   iZoomSpeed = -2000;
-  if (iPlayer1Car >= CAR_DESIGN_ZIZIN2)       // Position car selector cursor
+  if (iPlayer1Car >= CAR_DESIGN_SUICYCO)       // Position car selector cursor
     iCurrentCarSelectorPos = 8;
   else
     iCurrentCarSelectorPos = iPlayer1Car;
@@ -2015,7 +2015,7 @@ void select_car()
           fCarDrawDistance = (float)iZoomDistance;
           DrawCar(scrbuf + 34640, iPlayer1Car, fCarDrawDistance, 1280, 0);
         }
-        if (iPlayer1Car < CAR_DESIGN_ZIZIN2)
+        if (iPlayer1Car < CAR_DESIGN_SUICYCO)
           display_block(scrbuf, front_vga[3], iPlayer1Car, 190, 356, 0);
       }
       display_block(scrbuf, front_vga[7], 0, 560, 20, 0);// Draw car statistics as 7 pie chart segments (speed, acceleration, braking, etc.)
@@ -2192,7 +2192,7 @@ void select_car()
           }
           if (iPlayer1Car >= CAR_DESIGN_AUTO) {
             sfxsample(SOUND_SAMPLE_CARIN, 0x8000);
-            if (iPlayer1Car < CAR_DESIGN_ZIZIN2)
+            if (iPlayer1Car < CAR_DESIGN_SUICYCO)
               loadfrontendsample(descript[iPlayer1Car]);
             if (!SamplePtr[SOUND_SAMPLE_CARIN])
               frontendsample(0x8000);
@@ -2256,7 +2256,7 @@ void select_car()
       }
       if (!front_fade)                        // Screen fade-in: Load car voice sample and fade palette to visible
       {
-        if ((unsigned int)iPlayer1Car < CAR_DESIGN_ZIZIN2)
+        if (iPlayer1Car < CAR_DESIGN_SUICYCO)
           loadfrontendsample(descript[iPlayer1Car]);
         front_fade = -1;
         fade_palette(32);
@@ -6495,27 +6495,27 @@ int CheckNames(char *szPlayerName, int iPlayerIdx)
       if (iCheatIdx <= 25) {
         switch (iCheatIdx) {
           case 0: //SUICYCO (cheat car, explode opponent)
-            Players_Cars[iPlayerIdx] = 8;
+            Players_Cars[iPlayerIdx] = CAR_DESIGN_SUICYCO;
             name_copy(szPlayerName, "DAMIAN");
             cheat_mode |= CHEAT_MODE_CHEAT_CAR;
             break;
           case 1: //MAYTE (cheat car, top speed)
-            Players_Cars[iPlayerIdx] = 9;
+            Players_Cars[iPlayerIdx] = CAR_DESIGN_MAYTE;
             name_copy(szPlayerName, "DAMON");
             cheat_mode |= CHEAT_MODE_CHEAT_CAR;
             break;
           case 2: //2X4B523P (cheat car, flip opponent)
-            Players_Cars[iPlayerIdx] = 10;
+            Players_Cars[iPlayerIdx] = CAR_DESIGN_2X4B523P;
             name_copy(szPlayerName, "GRAHAM");
             cheat_mode |= CHEAT_MODE_CHEAT_CAR;
             break;
           case 3: //TINKLE (cheat car, jump opponent)
-            Players_Cars[iPlayerIdx] = 11;
+            Players_Cars[iPlayerIdx] = CAR_DESIGN_TINKLE;
             name_copy(szPlayerName, "KEV");
             cheat_mode |= CHEAT_MODE_CHEAT_CAR;
             break;
           case 4: //LOVEBUN (formula car)
-            Players_Cars[iPlayerIdx] = 12;
+            Players_Cars[iPlayerIdx] = CAR_DESIGN_F1WACK;
             name_copy(szPlayerName, "LISA");
             cheat_mode |= CHEAT_MODE_CHEAT_CAR;
             break;
@@ -6657,6 +6657,13 @@ int CheckNames(char *szPlayerName, int iPlayerIdx)
       if (iPlayerIdx == 0) {
         cheat_mode |= CHEAT_MODE_GRAYSCALE;
       }
+      break;
+    }
+    //cheats added by ROLLER
+    else if (name_cmp(szPlayerName, "CHRSTINE")) {
+      Players_Cars[iPlayerIdx] = CAR_DESIGN_DEATH;
+      name_copy(szPlayerName, "MR EVIL");
+      cheat_mode |= CHEAT_MODE_CHEAT_CAR;
       break;
     }
 
