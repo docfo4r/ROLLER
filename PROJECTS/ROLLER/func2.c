@@ -1967,8 +1967,8 @@ void FindShades()
       iG -= iStepG;
       if (iG < 0)
         iG = 0;
-      iColorOffset += 256;                      // Move to next shade block (256-byte stride)
       shade_palette[iColorOffset] = nearest_colour(iR, iB, iG);
+      iColorOffset += 256;                      // Move to next shade block (256-byte stride)
     } while (iColorOffset != iMaxOffset);
 
     // Generate special blend shade using color 0xDB as reference
