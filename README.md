@@ -5,7 +5,7 @@
 
 ![Roller logo](./images/whiplash.gif)
 
-This project aims to implement all the functionality of the 1995 game Whiplash/Fatal Racing in a way that builds and runs on modern PCs. Where necessary, DOS-specific functions are substituted with SDL and Windows/Unix equivalents.
+This project aims to implement all the functionality of the 1995 game Whiplash/Fatal Racing in a way that builds and runs on modern PCs. Where necessary, DOS-specific functions are substituted with SDL and Windows/Unix equivalents. For instruction-matching decomp, see https://github.com/FatalDecomp/ROLLER-matching
 
 [![On track!](https://img.youtube.com/vi/xjQ-uQNEEpM/maxresdefault.jpg)](https://www.youtube.com/watch?v=xjQ-uQNEEpM)
 
