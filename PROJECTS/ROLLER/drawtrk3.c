@@ -8,6 +8,7 @@
 #include "transfrm.h"
 #include "building.h"
 #include "tower.h"
+#include "roller.h"
 #include <math.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -4161,7 +4162,7 @@ LABEL_393:
           }
           goto LABEL_1271;
         case 0xB:
-          if (CarsLeft < 7 && CarsLeft > -3 || winner_mode || replaytype == 2)
+          if (CarsLeft < 7 && CarsLeft > -3 || winner_mode || replaytype == 2 || g_bForceMaxDraw)
             DisplayCar(iSectionNum, pScrPtr_1, fRenderDepth);
           --CarsLeft;
           if (names_on && (names_on == 1 || human_control[iSectionNum]))
