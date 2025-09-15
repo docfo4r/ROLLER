@@ -2118,7 +2118,7 @@ LABEL_393:
               LWallPoly.vertices[1] = pScreenCoord_1->screenPtAy[4].screen;
               LWallPoly.vertices[2] = pScreenCoord_1->screenPtAy[1].screen;
               LWallPoly.vertices[3] = pScreenCoord->screenPtAy[1].screen;
-              if ((LWallPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on && (LWallPoly.iSurfaceType & 7) != 7) {
+              if ((LWallPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on) {
                 set_starts(1u);
                 if (pScreenCoord->screenPtAy[4].projected.fZ >= (double)pScreenCoord_1->screenPtAy[4].projected.fZ)
                   fRoof1InnerDepthAlt = pScreenCoord_1->screenPtAy[4].projected.fZ;
@@ -2245,7 +2245,7 @@ LABEL_393:
             LWallPoly.vertices[1] = pScreenCoord_1->screenPtAy[4].screen;
             LWallPoly.vertices[2] = pScreenCoord_1->screenPtAy[0].screen;
             LWallPoly.vertices[3] = pScreenCoord->screenPtAy[0].screen;
-            if ((LWallPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on && (LWallPoly.iSurfaceType & 7) != 7) {
+            if ((LWallPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on) {
               set_starts(1u);
               if (pScreenCoord->screenPtAy[4].projected.fZ >= (double)pScreenCoord_1->screenPtAy[4].projected.fZ)
                 fWallLeftDepth2 = pScreenCoord_1->screenPtAy[4].projected.fZ;
@@ -2377,7 +2377,7 @@ LABEL_393:
               RWallPoly.vertices[1] = pScreenCoord->screenPtAy[5].screen;
               RWallPoly.vertices[2] = pScreenCoord->screenPtAy[2].screen;
               RWallPoly.vertices[3] = pScreenCoord_1->screenPtAy[2].screen;
-              if ((RWallPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on && (RWallPoly.iSurfaceType & 7) != 7) {
+              if ((RWallPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on) {
                 set_starts(1u);
                 if (pScreenCoord_1->screenPtAy[5].projected.fZ >= (double)pScreenCoord->screenPtAy[5].projected.fZ)
                   fRightWallGeomDepth1 = pScreenCoord->screenPtAy[5].projected.fZ;
@@ -2513,7 +2513,7 @@ LABEL_393:
           RWallPoly.vertices[1] = pScreenCoord->screenPtAy[5].screen;
           RWallPoly.vertices[2] = pScreenCoord->screenPtAy[3].screen;
           RWallPoly.vertices[3] = pScreenCoord_1->screenPtAy[3].screen;
-          if ((RWallPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on && (RWallPoly.iSurfaceType & 7) != 7) {
+          if ((RWallPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on) {
             set_starts(1u);
             if (pScreenCoord_1->screenPtAy[5].projected.fZ >= (double)pScreenCoord->screenPtAy[5].projected.fZ)
               fGeometryDepth1 = pScreenCoord->screenPtAy[5].projected.fZ;
@@ -2639,7 +2639,7 @@ LABEL_393:
           G3Poly.vertices[2] = pCurrentGroundScreen->screenPtAy[2].screen;
           G3Poly.vertices[3] = pCurrentGroundScreen->screenPtAy[3].screen;
           G3Poly.uiNumVerts = 4;
-          if ((G3Poly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && (G3Poly.iSurfaceType & 7) != 7) {
+          if ((G3Poly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0) {
             set_starts(1u);
             if ((textures_off & TEX_OFF_GROUND_TEXTURES) != 0 && (G3Poly.iSurfaceType & SURFACE_FLAG_APPLY_TEXTURE) != 0)
               G3Poly.iSurfaceType = remap_tex[(uint8)(G3Poly.iSurfaceType)] + (G3Poly.iSurfaceType & (SURFACE_MASK_FLAGS ^ SURFACE_FLAG_APPLY_TEXTURE));
@@ -2772,7 +2772,7 @@ LABEL_393:
           G1Poly.vertices[3] = pNextGroundScreen->screenPtAy[1].screen;
           if (G1Poly.iSurfaceType == -1 || GroundColour[iSectionNum][GROUND_COLOUR_OFLOOR] == -1)
             goto LABEL_1068;
-          if ((G1Poly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) == 0 || (G1Poly.iSurfaceType & 7) == 7) {
+          if ((G1Poly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) == 0) {
             if ((textures_off & TEX_OFF_GROUND_TEXTURES) != 0 && (G1Poly.iSurfaceType & SURFACE_FLAG_APPLY_TEXTURE) != 0)
               G1Poly.iSurfaceType = remap_tex[(uint8)(G1Poly.iSurfaceType)] + (G1Poly.iSurfaceType & (SURFACE_MASK_FLAGS ^ SURFACE_FLAG_APPLY_TEXTURE));
             set_starts(0);
@@ -2911,7 +2911,9 @@ LABEL_393:
           G2Poly.vertices[3].y = pNextGroundScreen->screenPtAy[2].screen.y;
           if (G2Poly.iSurfaceType == -1 || GroundColour[iSectionNum][GROUND_COLOUR_OFLOOR] == -1)
             goto LABEL_1271;
-          if ((G2Poly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && (G2Poly.iSurfaceType & 7) != 7) {
+          if ((G2Poly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0) {
+            if(G2Poly.iSurfaceType == 65854)
+              G2Poly.iSurfaceType += 1;
             set_starts(1u);
             if ((textures_off & TEX_OFF_GROUND_TEXTURES) != 0 && (G2Poly.iSurfaceType & SURFACE_FLAG_APPLY_TEXTURE) != 0)
               G2Poly.iSurfaceType = remap_tex[(uint8)(G2Poly.iSurfaceType)] + (G2Poly.iSurfaceType & (SURFACE_MASK_FLAGS ^ SURFACE_FLAG_APPLY_TEXTURE));
@@ -3049,7 +3051,7 @@ LABEL_393:
           G5Poly.vertices[3].y = pNextGroundScreen->screenPtAy[5].screen.y;
           if (G5Poly.iSurfaceType == -1 || GroundColour[iSectionNum][GROUND_COLOUR_OFLOOR] == -1)
             goto LABEL_1174;
-          if ((G5Poly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) == 0 || (G5Poly.iSurfaceType & 7) == 7) {
+          if ((G5Poly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) == 0) {
             if ((textures_off & TEX_OFF_GROUND_TEXTURES) != 0 && (G5Poly.iSurfaceType & SURFACE_FLAG_APPLY_TEXTURE) != 0)
               G5Poly.iSurfaceType = remap_tex[(uint8)(G5Poly.iSurfaceType)] + (G5Poly.iSurfaceType & (SURFACE_MASK_FLAGS ^ SURFACE_FLAG_APPLY_TEXTURE));
             set_starts(0);
@@ -3187,7 +3189,7 @@ LABEL_393:
           G4Poly.uiNumVerts = 4;
           if (G4Poly.iSurfaceType == -1 || GroundColour[iSectionNum][GROUND_COLOUR_OFLOOR] == -1)
             goto LABEL_1271;
-          if ((G4Poly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && (G4Poly.iSurfaceType & 7) != 7) {
+          if ((G4Poly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0) {
             set_starts(1u);
             if ((textures_off & TEX_OFF_GROUND_TEXTURES) != 0 && (G4Poly.iSurfaceType & SURFACE_FLAG_APPLY_TEXTURE) != 0)
               G4Poly.iSurfaceType = (G4Poly.iSurfaceType & (SURFACE_MASK_FLAGS ^ SURFACE_FLAG_APPLY_TEXTURE)) + remap_tex[(uint8)(G4Poly.iSurfaceType)];
@@ -3323,7 +3325,7 @@ LABEL_393:
             RoadPoly.vertices[1] = pScreenCoord->screenPtAy[1].screen;
             RoadPoly.vertices[2] = pScreenCoord_1->screenPtAy[1].screen;
             RoadPoly.vertices[3] = pScreenCoord_1->screenPtAy[2].screen;
-            if ((RoadPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on && (RoadPoly.iSurfaceType & 7) != 7) {
+            if ((RoadPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on) {
               set_starts(1u);
               if (pScreenCoord->screenPtAy[2].projected.fZ >= (double)pScreenCoord->screenPtAy[1].projected.fZ)
                 iSectionTypeIndex = pScreenCoord->screenPtAy[1].projected.fZ;
@@ -3397,7 +3399,7 @@ LABEL_393:
             RoadPoly.vertices[1] = pScreenCoord->screenPtAy[2].screen;
             RoadPoly.vertices[2] = pScreenCoord_1->screenPtAy[2].screen;
             RoadPoly.vertices[3] = pScreenCoord_1->screenPtAy[1].screen;
-            if ((RoadPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on && (RoadPoly.iSurfaceType & 7) != 7) {
+            if ((RoadPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on) {
               set_starts(1u);
               if (pScreenCoord->screenPtAy[2].projected.fZ >= (double)pScreenCoord->screenPtAy[1].projected.fZ)
                 fObjectDepth1 = pScreenCoord->screenPtAy[1].projected.fZ;
@@ -3525,7 +3527,7 @@ LABEL_393:
           LeftPoly.vertices[1] = pScreenCoord->screenPtAy[0].screen;
           LeftPoly.vertices[2] = pScreenCoord_1->screenPtAy[0].screen;
           LeftPoly.vertices[3] = pScreenCoord_1->screenPtAy[1].screen;
-          if ((LeftPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on && (LeftPoly.iSurfaceType & 7) != 7) {
+          if ((LeftPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on) {
             set_starts(1u);
             if (pScreenCoord->screenPtAy[1].projected.fZ >= (double)pScreenCoord->screenPtAy[0].projected.fZ)
               fMiddleDepth1 = pScreenCoord->screenPtAy[0].projected.fZ;
@@ -3642,7 +3644,7 @@ LABEL_393:
           RightPoly.vertices[1] = pScreenCoord->screenPtAy[2].screen;
           RightPoly.vertices[2] = pScreenCoord_1->screenPtAy[2].screen;
           RightPoly.vertices[3] = pScreenCoord_1->screenPtAy[3].screen;
-          if ((RightPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on && (RightPoly.iSurfaceType & 7) != 7) {
+          if ((RightPoly.iSurfaceType & SURFACE_FLAG_TEXTURE_PAIR) != 0 && wide_on) {
             set_starts(1u);
             if (pScreenCoord->screenPtAy[3].projected.fZ >= (double)pScreenCoord->screenPtAy[2].projected.fZ)
               fRightDepth1 = pScreenCoord->screenPtAy[2].projected.fZ;
@@ -3761,7 +3763,7 @@ LABEL_393:
             RoofPoly.iSurfaceType = -iGeometryIndex;
             RoofPoly.vertices[1].x = iProcessingIndex;
             RoofPoly.vertices[1].y = GroundScreenXYZ[iNextSectionIndex].screenPtAy[4].screen.y;
-            if ((-iGeometryIndex & SURFACE_FLAG_TEXTURE_PAIR) != 0 && (-(char)iGeometryIndex & 7) != 7) {
+            if ((-iGeometryIndex & SURFACE_FLAG_TEXTURE_PAIR) != 0) {
               set_starts(1u);
               if ((textures_off & TEX_OFF_GROUND_TEXTURES) != 0 && (RoofPoly.iSurfaceType & SURFACE_FLAG_APPLY_TEXTURE) != 0)
                 RoofPoly.iSurfaceType = remap_tex[(uint8)(RoofPoly.iSurfaceType)] + (RoofPoly.iSurfaceType & (SURFACE_MASK_FLAGS ^ SURFACE_FLAG_APPLY_TEXTURE));
@@ -3885,7 +3887,7 @@ LABEL_393:
             iScreenYCoord = GroundScreenXYZ[iSectionNum].screenPtAy[5].screen.y;
             RoofPoly.vertices[3].x = GroundScreenXYZ[iSectionNum].screenPtAy[5].screen.x;
             RoofPoly.vertices[3].y = iScreenYCoord;
-            if ((-iRenderCommandIndex & SURFACE_FLAG_TEXTURE_PAIR) != 0 && (RoofPoly.iSurfaceType & 7) != 7) {
+            if ((-iRenderCommandIndex & SURFACE_FLAG_TEXTURE_PAIR) != 0) {
               set_starts(1u);
               if ((textures_off & TEX_OFF_GROUND_TEXTURES) != 0 && (RoofPoly.iSurfaceType & SURFACE_FLAG_APPLY_TEXTURE) != 0)
                 RoofPoly.iSurfaceType = remap_tex[(uint8)(RoofPoly.iSurfaceType)] + (RoofPoly.iSurfaceType & (SURFACE_MASK_FLAGS ^ SURFACE_FLAG_APPLY_TEXTURE));
@@ -4004,7 +4006,7 @@ LABEL_393:
             RoofPoly.vertices[1] = pScreenCoord->screenPtAy[5].screen;
             RoofPoly.vertices[2] = pScreenCoord_1->screenPtAy[5].screen;
             RoofPoly.vertices[3] = pScreenCoord_1->screenPtAy[4].screen;
-            if (wide_on && (RoofPoly.iSurfaceType & 7) != 7) {
+            if (wide_on) {
               set_starts(1u);
               if (pScreenCoord->screenPtAy[4].projected.fZ >= (double)pScreenCoord->screenPtAy[5].projected.fZ)
                 fTrackDepth7 = pScreenCoord->screenPtAy[5].projected.fZ;
