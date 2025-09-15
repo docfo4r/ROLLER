@@ -12,14 +12,6 @@ This project aims to implement all the functionality of the 1995 game Whiplash/F
 ## Installation
 Assets from a retail copy of the game are required to run. Drop the contents of the build directory (bin or zig-out) into the Whiplash/Fatal Racing install directory. ROLLER.exe should be in the same directory as WHIP.EXE/FATAL.EXE.
 
-## TODO
-* Integrate sound panning with SDL
-* Find instrument/sample set for WildMidi that sounds closer to original hardware
-* Bug: pits in devil's hairpin do not show doubled texture
-* Linux only: replay positioning is chunky
-* Implement CD audio
-* Implement modern networking
-
 ## About
 
 Debug symbol dump generated with wdump, part of: https://github.com/open-watcom/open-watcom-v2
