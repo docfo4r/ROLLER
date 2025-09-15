@@ -205,38 +205,6 @@ exit 1</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\soscaps.c" />
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\soscntl.c" />
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosdata.c" />
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosdetec.c" />
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosdone.c" />
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\soserr.c" />
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosinit.c" />
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosload.c" />
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosplyng.c" />
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosrate.c" />
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosstart.c" />
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sostmr.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmcaps.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmcbck.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmdata.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmdigi.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmdone.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmdq.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosminit.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmins.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmload.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmpaus.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmptr.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmsong.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmst.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmtmpo.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmtmr.c" />
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmwave.c" />
-    <ClCompile Include="GSSCOMMS\serial.c" />
-    <ClCompile Include="NETSRC\SRC\ipx.c" />
-    <ClCompile Include="NETSRC\SRC\netbios.c" />
-    <ClCompile Include="NETSRC\SRC\netnow.c" />
     <ClCompile Include="PROJECTS\ROLLER\3d.c" />
     <ClCompile Include="PROJECTS\ROLLER\building.c" />
     <ClCompile Include="PROJECTS\ROLLER\car.c" />
@@ -274,10 +242,6 @@ exit 1</Command>
     <None Include=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DONS\SOSDIGIW\SOSLIB\SRC\soscntl.h" />
-    <ClInclude Include="DONS\SOSDIGIW\SOSLIB\SRC\sosdata.h" />
-    <ClInclude Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmdata.h" />
-    <ClInclude Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmwave.h" />
     <ClInclude Include="PROJECTS\ROLLER\3d.h" />
     <ClInclude Include="PROJECTS\ROLLER\building.h" />
     <ClInclude Include="PROJECTS\ROLLER\car.h" />

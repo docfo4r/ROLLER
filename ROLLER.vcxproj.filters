@@ -7,36 +7,6 @@
     <Filter Include="PROJECTS\ROLLER">
       <UniqueIdentifier>{f60559b2-54d1-4805-9072-5ef7519e8dc9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NETSRC">
-      <UniqueIdentifier>{ec20289b-b89d-4672-bdb1-16dd935eee34}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="NETSRC\SRC">
-      <UniqueIdentifier>{caeb3dac-b1a3-4806-8fa8-f9add2161a96}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GSSCOMMS">
-      <UniqueIdentifier>{3fdca4ea-34a9-4698-8faf-e84993a08a41}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DONS">
-      <UniqueIdentifier>{b2fc1c30-08dd-4bab-8bb6-f086fa881e4e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DONS\SOSDIGIW">
-      <UniqueIdentifier>{3752b876-d236-4844-a99e-8b4329c99386}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DONS\SOSDIGIW\SOSLIB">
-      <UniqueIdentifier>{dec3ff68-a116-4371-b4b3-77ae6b065f21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DONS\SOSDIGIW\SOSLIB\SRC">
-      <UniqueIdentifier>{7942c507-27bb-4ab1-b53e-8c6c8e82ee96}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DONS\SOSMIDIW">
-      <UniqueIdentifier>{dd0c90af-9e12-4b20-96ad-c10b768e9173}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DONS\SOSMIDIW\SOSMLIB">
-      <UniqueIdentifier>{0eaadf1e-0338-4df4-9de6-0fd84679bca3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DONS\SOSMIDIW\SOSMLIB\SRC">
-      <UniqueIdentifier>{361b18f5-2d1d-49ee-a5cc-12df60fea180}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PROJECTS\ROLLER\Source">
       <UniqueIdentifier>{df4a16d3-4ac0-4350-8730-22fa2ba87216}</UniqueIdentifier>
     </Filter>
@@ -48,102 +18,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="NETSRC\SRC\ipx.c">
-      <Filter>NETSRC\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="NETSRC\SRC\netbios.c">
-      <Filter>NETSRC\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="NETSRC\SRC\netnow.c">
-      <Filter>NETSRC\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="GSSCOMMS\serial.c">
-      <Filter>GSSCOMMS</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\soscaps.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\soscntl.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosdata.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosdetec.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosdone.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\soserr.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosinit.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosload.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosplyng.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosrate.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sosstart.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSDIGIW\SOSLIB\SRC\sostmr.c">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmcaps.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmcbck.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmdata.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmdigi.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmdone.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmdq.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosminit.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmins.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmload.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmpaus.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmptr.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmsong.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmst.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmtmpo.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmtmr.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
-    <ClCompile Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmwave.c">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClCompile>
     <ClCompile Include="PROJECTS\ROLLER\3d.c">
       <Filter>PROJECTS\ROLLER\Source</Filter>
     </ClCompile>
@@ -346,18 +220,6 @@
     </ClInclude>
     <ClInclude Include="PROJECTS\ROLLER\roller.h">
       <Filter>PROJECTS\ROLLER\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmwave.h">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClInclude>
-    <ClInclude Include="DONS\SOSDIGIW\SOSLIB\SRC\sosdata.h">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
-    </ClInclude>
-    <ClInclude Include="DONS\SOSMIDIW\SOSMLIB\SRC\sosmdata.h">
-      <Filter>DONS\SOSMIDIW\SOSMLIB\SRC</Filter>
-    </ClInclude>
-    <ClInclude Include="DONS\SOSDIGIW\SOSLIB\SRC\soscntl.h">
-      <Filter>DONS\SOSDIGIW\SOSLIB\SRC</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
