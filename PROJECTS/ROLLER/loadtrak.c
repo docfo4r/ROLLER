@@ -416,17 +416,6 @@ void loadtrack(int iTrackIdx, int iPreviewMode)
           &iDrawOrderBackward,
           &iBackwardExtraStart2,
           &iBackwardExtraChunks);               // Read wall heights, offsets and view distance data
-
-        //added by ROLLER to force maximum draw distance
-        if (g_bForceMaxDraw) {
-          iDrawOrder1 = 255;
-          iForwardExtraStart = -1;
-          iDrawOrder3 = 0;
-          iDrawOrderBackward = 255;
-          iBackwardExtraStart2 = -1;
-          iBackwardExtraChunks = 0;
-        }
-
         if (bMinimalMode) {
           dLeftLaneWidth = dLeftLaneWidth * 2.0;
           dRightLaneWidth = dRightLaneWidth * 2.0;
@@ -498,7 +487,7 @@ void loadtrack(int iTrackIdx, int iPreviewMode)
         } while (iSubdivLoopIdx <= 10);
         if (iDrawOrder1 < 8)
           iDrawOrder1 = 32;
-        if (iDrawOrder1 > 128 && !g_bForceMaxDraw)
+        if (iDrawOrder1 > 128)
           iDrawOrder1 = 32;
         TrakView[uiTrakViewOffset / 8].byForwardMainChunks = iDrawOrder1;
         if (iForwardExtraStart < 0 || iForwardExtraStart > TRAK_LEN || iDrawOrder3 < 8 || iDrawOrder3 > 128) {
@@ -511,7 +500,7 @@ void loadtrack(int iTrackIdx, int iPreviewMode)
         *(&TrakView[0].byForwardExtraChunks + v22) = iDrawOrder3;
         if (uiTrakViewOffset1 < 8)
           iDrawOrderBackward = 32;
-        if (iDrawOrderBackward > 128 && !g_bForceMaxDraw)
+        if (iDrawOrderBackward > 128)
           iDrawOrderBackward = 32;
         iBackwardExtraStart = iBackwardExtraStart2;
         TrakView[uiTrakViewOffset / 8].byBackwardMainChunks = iDrawOrderBackward;
