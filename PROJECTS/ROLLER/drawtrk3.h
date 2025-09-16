@@ -10,7 +10,7 @@ extern int showsub;
 extern int cube_faces[6][4];
 extern int view_limit;
 extern int divtype;
-extern int NextSect[500];
+extern int NextSect[MAX_TRACK_CHUNKS];
 extern tScreenPt LightXYZ[8];
 extern int tex_hgt;
 extern int polyysize;

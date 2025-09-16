@@ -26,7 +26,7 @@ int cube_faces[6][4] =  //000A4158
 };
 int view_limit = 0; //000A41B8
 int divtype = 0;    //000A41BC
-int NextSect[500];  //00143BF4
+int NextSect[MAX_TRACK_CHUNKS];  //00143BF4
 tScreenPt LightXYZ[8];  //001443C4
 int tex_hgt;        //00144464
 int polyysize;      //00144468
