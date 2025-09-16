@@ -419,10 +419,10 @@ void loadtrack(int iTrackIdx, int iPreviewMode)
 
         //added by ROLLER to force maximum draw distance
         if (g_bForceMaxDraw) {
-          iDrawOrder1 = TRAK_LEN - 1;
+          iDrawOrder1 = 255;
           iForwardExtraStart = -1;
           iDrawOrder3 = 0;
-          iDrawOrderBackward = TRAK_LEN - 1;
+          iDrawOrderBackward = 255;
           iBackwardExtraStart2 = -1;
           iBackwardExtraChunks = 0;
         }

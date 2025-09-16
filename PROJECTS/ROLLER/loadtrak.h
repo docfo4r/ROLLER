@@ -8,10 +8,10 @@
 typedef struct
 {
   int16 nForwardExtraStart;
-  int16 byForwardMainChunks;
+  uint8 byForwardMainChunks;
   uint8 byForwardExtraChunks;
   int16 nBackwardExtraStart;
-  int16 byBackwardMainChunks;
+  uint8 byBackwardMainChunks;
   uint8 byBackwardExtraChunks;
 } tTrakView;
 
