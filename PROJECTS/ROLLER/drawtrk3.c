@@ -2039,11 +2039,11 @@ LABEL_393:
       pBuildingRenderCmd->nRenderPriority = 13;
       //fOffsetTmp1 = iBuildingValue;
       //LOWORD(iBuildingValue) = pVisibleBuildingsPtr->iBuildingIdx;
-      ++pVisibleBuildingsPtr;
       pBuildingRenderCmd->nChunkIdx = pVisibleBuildingsPtr->iBuildingIdx;
       //pBuildingRenderCmd->nChunkIdx = LOWORD(iBuildingValue);
       pBuildingRenderCmd->fZDepth = pVisibleBuildingsPtr->fDepth;
       //pBuildingRenderCmd->fZDepth = fOffsetTmp1;
+      ++pVisibleBuildingsPtr;
       ++pBuildingRenderCmd;
       iBuildingNext = pVisibleBuildingsPtr->iBuildingIdx;
       num_bits = iBuildingCmdIndex + 1;
