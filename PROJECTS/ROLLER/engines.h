@@ -6,8 +6,8 @@
 
 typedef struct
 {
-  float fRPM;
   float fPower;
+  float fRPM;
 } tRevCurvePoint;
 
 //-------------------------------------------------------------------------------------------------
