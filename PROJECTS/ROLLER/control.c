@@ -1044,7 +1044,7 @@ double calc_revs(tRevCurve *pRevs, int iGear, float fChg)
   dDelta3 = fChg - fPower3;
   if (fChg < 0.0 || fChg >= (double)fPower1) {
     if (fChg >= (double)fPower3) {
-      fCalculatedResult = fPower3;// High RPM range: return maximum value
+      fCalculatedResult = fRPM3;// High RPM range: return maximum value
     } else {
       dHighInterp1 = (fPower1 - fPower2) * (fPower1 - fPower3);// Mid RPM range: quadratic interpolation between points 1-3
       dHighInterp2 = (fPower2 - fPower1) * (fPower2 - fPower3);
