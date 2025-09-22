@@ -1753,7 +1753,7 @@ void loadfile(const char *szFile, void **pBuf, unsigned int *uiSize, int iIsSoun
       if (pBuf2) {
         pUint8Buf = (uint8 *)pBuf2;
         initmangle(szFile);
-        loadcompactedfilepart(pUint8Buf, *uiSize);
+        loadcompactedfilepart(pUint8Buf, 1000000000u);
         uninitmangle();
       }
     }
@@ -4004,8 +4004,8 @@ int uninitmangle()
 int loadcompactedfile(const char *szFile, uint8 *pBuf)
 {
   initmangle(szFile);
-  uint32 uiSize = getcompactedfilelength(szFile);
-  loadcompactedfilepart(pBuf, uiSize);
+  getcompactedfilelength(szFile);
+  loadcompactedfilepart(pBuf, 1000000000u);
   return fclose(unmanglefile);
 }
 
@@ -4042,98 +4042,94 @@ void readmangled(uint8 *pBufRet, int iLength)
 //0003F290
 void loadcompactedfilepart(uint8 *pDest, uint32 uiDestLength)
 {
-  uint32 uiOutputPos = 0;
+  int c;
+  int u, v;
+  unsigned char *pt;
 
-  while (uiOutputPos < uiDestLength) {
-    uint8 *pByte = unmangleGet(unmangleinpoff, 1);
-    uint8 b = *pByte;
-    unmangleinpoff++;
+  // Do the unmangle
+  for (;;) {
+    c = *unmangleGet(unmangleinpoff++, 1);
+    if (!c) break;		// done
 
-    if (b <= 0x3F) {
-        // Literal copy
-      uint32 uiCount = b;
-      if (unmangleinpoff + uiCount > (uint32)unmangleinpoff + 0x400 || uiOutputPos + uiCount > uiDestLength)
-        break;
-      uint8 *pData = unmangleGet(unmangleinpoff, uiCount);
-      memcpy(&pDest[uiOutputPos], pData, uiCount);
-      unmangleinpoff += uiCount;
-      uiOutputPos += uiCount;
-    } else if (b <= 0x4F) {
-        // Linear extrapolation (bytes)
-      uint32 uiCount = (b & 0x0F) + 3;
-      if (uiOutputPos < 2 || uiOutputPos + uiCount > uiDestLength)
-        break;
-      int iDelta = pDest[uiOutputPos - 1] - pDest[uiOutputPos - 2];
-      for (uint32 i = 0; i < uiCount; ++i) {
-        pDest[uiOutputPos] = (uint8)((pDest[uiOutputPos - 1] + iDelta) & 0xFF);
-        uiOutputPos++;
+    if (c & 128) {
+            // Bit 7 : 1 : BLOCK
+      if (c & 64) {
+              // Bit 6 : 1 Block size
+        if (c & 32) {
+                // Bit 5 : 1 Long
+          pt = pDest - ((c & 31) << 8) - *unmangleGet(unmangleinpoff++, 1) - 3;	// offset
+          c = *unmangleGet(unmangleinpoff++, 1) + 5;						// size
+
+          while (c--)
+            *pDest++ = *pt++;
+        } else {
+        // Bit 5 : 0 Medium
+          pt = pDest - ((c & 3) << 8) - *unmangleGet(unmangleinpoff++, 1) - 3;	// offset
+          c = ((c >> 2) & 7) + 4;					// size
+          while (c--)
+            *pDest++ = *pt++;
+
+        }
+      } else {
+      // Bit 6 : 0 : Short
+        pt = pDest - (c & 63) - 3;
+        *pDest = *pt;
+        *(pDest + 1) = *(pt + 1);
+        *(pDest + 2) = *(pt + 2);
+        pDest += 3;
       }
-    } else if (b <= 0x5F) {
-        // Linear extrapolation (words)
-      uint32 uiCount = (b & 0x0F) + 2;
-      if (uiOutputPos < 4 || uiOutputPos + uiCount * 2 > uiDestLength)
-        break;
-      int16 nPrev = (int16)(pDest[uiOutputPos - 2] | (pDest[uiOutputPos - 1] << 8));
-      int16 nPrev2 = (int16)(pDest[uiOutputPos - 4] | (pDest[uiOutputPos - 3] << 8));
-      int16 nDelta = nPrev - nPrev2;
-      for (uint32 i = 0; i < uiCount; ++i) {
-        int16 nNewVal = nPrev + nDelta;
-        pDest[uiOutputPos++] = nNewVal & 0xFF;
-        pDest[uiOutputPos++] = (nNewVal >> 8) & 0xFF;
-        nPrev = nNewVal;
-      }
-    } else if (b <= 0x6F) {
-        // Repeat last byte
-      uint32 uiCount = (b & 0x0F) + 3;
-      if (uiOutputPos == 0 || uiOutputPos + uiCount > uiDestLength)
-        break;
-      uint8 val = pDest[uiOutputPos - 1];
-      memset(&pDest[uiOutputPos], val, uiCount);
-      uiOutputPos += uiCount;
-    } else if (b <= 0x7F) {
-        // Repeat last word
-      uint32 uiCount = (b & 0x0F) + 2;
-      if (uiOutputPos < 2 || uiOutputPos + uiCount * 2 > uiDestLength)
-        break;
-      for (uint32 i = 0; i < uiCount; ++i) {
-        pDest[uiOutputPos] = pDest[uiOutputPos - 2];
-        pDest[uiOutputPos + 1] = pDest[uiOutputPos - 1];
-        uiOutputPos += 2;
-      }
-    } else if (b <= 0xBF) {
-        // Copy 3 bytes from offset
-      int iOffset = (b & 0x3F) + 3;
-      if ((int)uiOutputPos - iOffset < 0 || uiOutputPos + 3 > uiDestLength)
-        break;
-      for (int i = 0; i < 3; ++i)
-        pDest[uiOutputPos++] = pDest[uiOutputPos - iOffset];
-    } else if (b <= 0xDF) {
-        // Copy from offset and length from next byte
-      uint8 *pLen = unmangleGet(unmangleinpoff, 1);
-      uint8 lenByte = *pLen;
-      unmangleinpoff++;
-
-      int iOffset = (((b & 0x03) << 8) | lenByte) + 3;
-      int length = ((b >> 2) & 0x07) + 4;
-      if ((int)uiOutputPos - iOffset < 0 || uiOutputPos + length > uiDestLength)
-        break;
-
-      for (int i = 0; i < length; ++i)
-        pDest[uiOutputPos++] = pDest[uiOutputPos - iOffset];
     } else {
-        // Copy from offset and length from next 2 bytes
-      uint8 *pBytes = unmangleGet(unmangleinpoff, 2);
-      uint8 offsetLo = pBytes[0];
-      uint8 lengthByte = pBytes[1];
-      unmangleinpoff += 2;
+    // Bit 7 : 0
+      if (c & 64) {
+              // Bit 6 : 1 Seq/Diff or String
+        if (c & 32) {
+                // Bit 5 : 1 : Sequence
+          if (c & 16) {
+          // Bit 4 : 1 : Word sequence
+            c = (c & 15) + 2;	// bits 3-0 = len 2->17
+            v = *(short *)(pDest - 2);
+            while (c--) {
+              *(short *)pDest = (short)v;
+              pDest += 2;
+            }
+          } else {
+          // Bit 4 : 0 : Byte sequence
+            c = (c & 15) + 3;	// bits 3-0 = len 3->18
+            v = *(pDest - 1);
+            while (c--)
+              *pDest++ = (signed char)v;
+          }
+        } else {
+        // Bit 5 : 0 : Difference
+          if (c & 16) {
+          // Bit 4 : 1 : Word difference
+            c = (c & 15) + 2;			// bits 3-0 = len 2->17
+            u = *(short *)(pDest - 2);		// start word
+            v = u - *(short *)(pDest - 4);	// dif
+            while (c--) {
+              u += v;
+              *(short *)pDest = (short)u;
+              pDest += 2;
+            }
+          } else {
+          // Bit 4 : 0 : Byte difference
+            c = (c & 15) + 3;	// bits 3-0 = len 3->18
+            u = *(pDest - 1);		// start byte
+            v = u - *(pDest - 2);	// dif
 
-      int iOffset = (((b & 0x1F) << 8) | offsetLo) + 3;
-      int iLength = lengthByte + 5;
-      if ((int)uiOutputPos - iOffset < 0 || uiOutputPos + iLength > uiDestLength)
-        break;
-
-      for (int i = 0; i < iLength; ++i)
-        pDest[uiOutputPos++] = pDest[uiOutputPos - iOffset];
+            while (c--) {
+              u += v;
+              *pDest++ = (char)u;
+            }
+          }
+        }
+      } else {
+      // Bit 6 : 0 : String
+        c &= 63;	// len
+        memcpy(pDest, unmangleGet(unmangleinpoff, c), c);
+        pDest += c;
+        unmangleinpoff += c;
+      }
     }
   }
 }
