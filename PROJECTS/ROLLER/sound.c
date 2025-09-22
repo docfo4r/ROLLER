@@ -4043,10 +4043,14 @@ void loadcompactedfilepart(uint8 *pDest, uint32 uiDestLength)
 {
   int c;
   int u, v;
-  unsigned char *pt;
+  unsigned char *pt;;
 
   // Do the unmangle
+  unmangledst = pDest;
   for (;;) {
+    if (unmangledst - pDest >= (int)uiDestLength)
+      break;
+
     c = *unmangleGet(unmangleinpoff++, 1);
     if (!c) break;		// done
 
@@ -4056,26 +4060,26 @@ void loadcompactedfilepart(uint8 *pDest, uint32 uiDestLength)
               // Bit 6 : 1 Block size
         if (c & 32) {
                 // Bit 5 : 1 Long
-          pt = pDest - ((c & 31) << 8) - *unmangleGet(unmangleinpoff++, 1) - 3;	// offset
+          pt = unmangledst - ((c & 31) << 8) - *unmangleGet(unmangleinpoff++, 1) - 3;	// offset
           c = *unmangleGet(unmangleinpoff++, 1) + 5;						// size
 
           while (c--)
-            *pDest++ = *pt++;
+            *unmangledst++ = *pt++;
         } else {
         // Bit 5 : 0 Medium
-          pt = pDest - ((c & 3) << 8) - *unmangleGet(unmangleinpoff++, 1) - 3;	// offset
+          pt = unmangledst - ((c & 3) << 8) - *unmangleGet(unmangleinpoff++, 1) - 3;	// offset
           c = ((c >> 2) & 7) + 4;					// size
           while (c--)
-            *pDest++ = *pt++;
+            *unmangledst++ = *pt++;
 
         }
       } else {
       // Bit 6 : 0 : Short
-        pt = pDest - (c & 63) - 3;
-        *pDest = *pt;
-        *(pDest + 1) = *(pt + 1);
-        *(pDest + 2) = *(pt + 2);
-        pDest += 3;
+        pt = unmangledst - (c & 63) - 3;
+        *unmangledst = *pt;
+        *(unmangledst + 1) = *(pt + 1);
+        *(unmangledst + 2) = *(pt + 2);
+        unmangledst += 3;
       }
     } else {
     // Bit 7 : 0
@@ -4086,47 +4090,47 @@ void loadcompactedfilepart(uint8 *pDest, uint32 uiDestLength)
           if (c & 16) {
           // Bit 4 : 1 : Word sequence
             c = (c & 15) + 2;	// bits 3-0 = len 2->17
-            v = *(short *)(pDest - 2);
+            v = *(short *)(unmangledst - 2);
             while (c--) {
-              *(short *)pDest = (short)v;
-              pDest += 2;
+              *(short *)unmangledst = (short)v;
+              unmangledst += 2;
             }
           } else {
           // Bit 4 : 0 : Byte sequence
             c = (c & 15) + 3;	// bits 3-0 = len 3->18
-            v = *(pDest - 1);
+            v = *(unmangledst - 1);
             while (c--)
-              *pDest++ = (signed char)v;
+              *unmangledst++ = (signed char)v;
           }
         } else {
         // Bit 5 : 0 : Difference
           if (c & 16) {
           // Bit 4 : 1 : Word difference
             c = (c & 15) + 2;			// bits 3-0 = len 2->17
-            u = *(short *)(pDest - 2);		// start word
-            v = u - *(short *)(pDest - 4);	// dif
+            u = *(short *)(unmangledst - 2);		// start word
+            v = u - *(short *)(unmangledst - 4);	// dif
             while (c--) {
               u += v;
-              *(short *)pDest = (short)u;
-              pDest += 2;
+              *(short *)unmangledst = (short)u;
+              unmangledst += 2;
             }
           } else {
           // Bit 4 : 0 : Byte difference
             c = (c & 15) + 3;	// bits 3-0 = len 3->18
-            u = *(pDest - 1);		// start byte
-            v = u - *(pDest - 2);	// dif
+            u = *(unmangledst - 1);		// start byte
+            v = u - *(unmangledst - 2);	// dif
 
             while (c--) {
               u += v;
-              *pDest++ = (char)u;
+              *unmangledst++ = (char)u;
             }
           }
         }
       } else {
       // Bit 6 : 0 : String
         c &= 63;	// len
-        memcpy(pDest, unmangleGet(unmangleinpoff, c), c);
-        pDest += c;
+        memcpy(unmangledst, unmangleGet(unmangleinpoff, c), c);
+        unmangledst += c;
         unmangleinpoff += c;
       }
     }
