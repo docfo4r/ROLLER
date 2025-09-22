@@ -4004,7 +4004,6 @@ int uninitmangle()
 int loadcompactedfile(const char *szFile, uint8 *pBuf)
 {
   initmangle(szFile);
-  getcompactedfilelength(szFile);
   loadcompactedfilepart(pBuf, 1000000000u);
   return fclose(unmanglefile);
 }
