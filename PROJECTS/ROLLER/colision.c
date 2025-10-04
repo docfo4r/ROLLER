@@ -302,7 +302,7 @@ void testcoll(tCar *pCar1, tCar *pCar2, int iDistanceSteps)
         iCar2RotAngle = (((uint16)pCar2->nActualYaw - (int16)iCollisionDirection) & 0x3FFF) - 0x4000;
       fSpeedDifference = (float)fabs(fCar2VelX - fCar1VelX);
       dMomentumFactor = 1.0 / ((fCar2Mass + fCar1Mass) * 2048.0);
-      //_CHP();
+      dMomentumFactor = floor(dMomentumFactor);//_CHP();
       pCar1->iJumpMomentum = (int)(fCar2Mass * 2.0 * (double)iCar2RotAngle * fSpeedDifference * dMomentumFactor);// Calculate jump/spin momentum based on angular impact and speed difference
       //_CHP();
       pCar2->iJumpMomentum = (int)(dMomentumFactor * (fCar1Mass * 2.0 * (double)iCar1RotAngle * fSpeedDifference));

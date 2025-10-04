@@ -1552,7 +1552,7 @@ void play_game_init()
     do {
       dTotalTrackDistance2 = 2.0 * pLocalDataAy->fTrackHalfLength + dTotalTrackDistance;
       ++pLocalDataAy;
-      //_CHP();
+      dTotalTrackDistance2 = floor(dTotalTrackDistance2);//_CHP();
       dTotalTrackDistance = dTotalTrackDistance2;
       ++iChunkIdx;
     } while (iChunkIdx < iTrackLen);

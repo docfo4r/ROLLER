@@ -1148,7 +1148,7 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
       fWorldY = (float)(dDeltaX1 * vk2 + dDeltaY1 * vk5 + dDeltaZ1 * vk8);
       dCameraZ1 = dDeltaX1 * vk3 + dDeltaY1 * vk6 + dDeltaZ1 * vk9;
       fWorldZ = (float)dCameraZ1;
-      //_CHP();
+      dCameraZ1 = round(dCameraZ1);//_CHP();
       iProjectedZ = (int)dCameraZ1;
       if (fWorldZ < 80.0)                     // Apply near clipping plane (min Z = 80.0)
       {
@@ -1158,10 +1158,10 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
       dViewDistance1 = (double)VIEWDIST;
       dInvZ1 = 1.0 / fWorldZ;                   // Project to screen coordinates using perspective division
       dScreenX1 = dViewDistance1 * fWorldX * dInvZ1 + (double)xbase;
-      //_CHP();
+      dScreenX1 = round(dScreenX1);//_CHP();
       xp = (int)dScreenX1;
       dScreenY1 = dInvZ1 * (dViewDistance1 * fWorldY) + (double)ybase;
-      //_CHP();
+      dScreenY1 = round(dScreenY1);//_CHP();
       yp = (int)dScreenY1;
       pCurrentTrackScreenXYZ->screenPtAy[1].screen.x = xp * scr_size >> 6;
       //pCurrentTrackScreenXYZ->screenPtAy[1].screen.x = iScreenX1 >> 6;
@@ -1177,7 +1177,7 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
       fWorldY = (float)(dDeltaX2 * vk2 + dDeltaY2 * vk5 + dDeltaZ2 * vk8);
       dCameraZ2 = dDeltaX2 * vk3 + dDeltaY2 * vk6 + dDeltaZ2 * vk9;
       fWorldZ = (float)dCameraZ2;
-      //_CHP();
+      dCameraZ2 = round(dCameraZ2);//_CHP();
       iProjectedZ = (int)dCameraZ2;
       if (fWorldZ < 80.0) {
         fWorldZ = 80.0;
@@ -1186,10 +1186,10 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
       dViewDistance2 = (double)VIEWDIST;
       dInvZ2 = 1.0 / fWorldZ;
       dScreenX2 = dViewDistance2 * fWorldX * dInvZ2 + (double)xbase;
-      //_CHP();
+      dScreenX2 = round(dScreenX2);//_CHP();
       xp = (int)dScreenX2;
       dScreenY2 = dInvZ2 * (dViewDistance2 * fWorldY) + (double)ybase;
-      //_CHP();
+      dScreenY2 = round(dScreenY2);//_CHP();
       yp = (int)dScreenY2;
       pCurrentTrackScreenXYZ->screenPtAy[0].screen.x = xp * scr_size >> 6;
       //pCurrentTrackScreenXYZ->screenPtAy[0].screen.x = iScreenX2 >> 6;
@@ -1205,7 +1205,7 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
       fWorldY = (float)(dDeltaX3 * vk2 + dDeltaY3 * vk5 + dDeltaZ3 * vk8);
       dCameraZ3 = dDeltaX3 * vk3 + dDeltaY3 * vk6 + dDeltaZ3 * vk9;
       fWorldZ = (float)dCameraZ3;
-      //_CHP();
+      dCameraZ3 = round(dCameraZ3);//_CHP();
       iProjectedZ = (int)dCameraZ3;
       if (fWorldZ < 80.0) {
         iClipIncrement3 = pCurrentTrackScreenXYZ->iClipCount + 1;
@@ -1215,10 +1215,10 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
       dViewDistance3 = (double)VIEWDIST;
       dInvZ3 = 1.0 / fWorldZ;
       dScreenX3 = dViewDistance3 * fWorldX * dInvZ3 + (double)xbase;
-      //_CHP();
+      dScreenX3 = round(dScreenX3);//_CHP();
       xp = (int)dScreenX3;
       dScreenY3 = dInvZ3 * (dViewDistance3 * fWorldY) + (double)ybase;
-      //_CHP();
+      dScreenY3 = round(dScreenY3);//_CHP();
       yp = (int)dScreenY3;
       pCurrentTrackScreenXYZ->screenPtAy[2].screen.x = xp * scr_size >> 6;
       //pCurrentTrackScreenXYZ->screenPtAy[2].screen.x = iScreenX3 >> 6;
@@ -1234,7 +1234,7 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
       fWorldY = (float)(dDeltaX4 * vk2 + dDeltaY4 * vk5 + dDeltaZ4 * vk8);
       dCameraZ4 = dDeltaX4 * vk3 + dDeltaY4 * vk6 + dDeltaZ4 * vk9;
       fWorldZ = (float)dCameraZ4;
-      //_CHP();
+      dCameraZ4 = round(dCameraZ4);//_CHP();
       iProjectedZ = (int)dCameraZ4;
       if (fWorldZ < 80.0) {
         iClipIncrement4 = pCurrentTrackScreenXYZ->iClipCount + 1;
@@ -1244,11 +1244,11 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
       dViewDistance4 = (double)VIEWDIST;
       dInvZ4 = 1.0 / fWorldZ;
       dScreenX4 = dViewDistance4 * fWorldX * dInvZ4 + (double)xbase;
-      //_CHP();
+      dScreenX4 = round(dScreenX4);//_CHP();
       xp = (int)dScreenX4;
       dScreenY4 = dInvZ4 * (dViewDistance4 * fWorldY) + (double)ybase;
       iScrSize = scr_size;
-      //_CHP();
+      dScreenY4 = round(dScreenY4);//_CHP();
       yp = (int)dScreenY4;
       pCurrentTrackScreenXYZ->screenPtAy[3].screen.x = xp * scr_size >> 6;
       //pCurrentTrackScreenXYZ->screenPtAy[3].screen.x = iScreenX4 >> 6;
@@ -1269,17 +1269,17 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
         fLeftWallCameraY = (float)(dLeftWallDeltaX * vk2 + dLeftWallDeltaY * vk5 + dLeftWallDeltaZ * vk8);
         dLeftWallCameraZ = dLeftWallDeltaX * vk3 + dLeftWallDeltaY * vk6 + dLeftWallDeltaZ * vk9;
         fLeftWallCameraZ = (float)dLeftWallCameraZ;
-        //_CHP();
+        dLeftWallCameraZ = round(dLeftWallCameraZ);//_CHP();
         iLeftWallProjectedZ = (int)dLeftWallCameraZ;
         if (fLeftWallCameraZ < 80.0)
           fLeftWallCameraZ = 80.0;
         dLeftWallViewDist = (double)VIEWDIST;
         dLeftWallInvZ = 1.0 / fLeftWallCameraZ;
         dLeftWallScreenX = dLeftWallViewDist * fLeftWallCameraX * dLeftWallInvZ + (double)xbase;
-        //_CHP();
+        dLeftWallScreenX = round(dLeftWallScreenX);//_CHP();
         xp = (int)dLeftWallScreenX;
         dLeftWallScreenY = dLeftWallInvZ * (dLeftWallViewDist * fLeftWallCameraY) + (double)ybase;
-        //_CHP();
+        dLeftWallScreenY = round(dLeftWallScreenY);//_CHP();
         yp = (int)dLeftWallScreenY;
         pCurrentTrackScreenXYZ->screenPtAy[4].screen.x = xp * scr_size >> 6;
         //pCurrentTrackScreenXYZ->screenPtAy[4].screen.x = iLeftWallScreenX >> 6;
@@ -1314,18 +1314,18 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
         fRightWallCameraY = (float)(dRightWallDeltaX * vk2 + dRightWallDeltaY * vk5 + dRightWallDeltaZ * vk8);
         dRightWallCameraZ = dRightWallDeltaX * vk3 + dRightWallDeltaY * vk6 + dRightWallDeltaZ * vk9;
         fRightWallCameraZ = (float)dRightWallCameraZ;
-        //_CHP();
+        dRightWallCameraZ = round(dRightWallCameraZ);//_CHP();
         iRightWallProjectedZ = (int)dRightWallCameraZ;
         if (fRightWallCameraZ < 80.0)
           fRightWallCameraZ = 80.0;
         dRightWallViewDist = (double)VIEWDIST;
         dRightWallInvZ = 1.0 / fRightWallCameraZ;
         dRightWallScreenX = dRightWallViewDist * fRightWallCameraX * dRightWallInvZ + (double)xbase;
-        //_CHP();
+        dRightWallScreenX = round(dRightWallScreenX);//_CHP();
         xp = (int)dRightWallScreenX;
         dRightWallScreenY = dRightWallInvZ * (dRightWallViewDist * fRightWallCameraY) + (double)ybase;
         iRightWallScrSize = scr_size;
-        //_CHP();
+        dRightWallScreenY = round(dRightWallScreenY);//_CHP();
         yp = (int)dRightWallScreenY;
         pCurrentTrackScreenXYZ->screenPtAy[5].screen.x = xp * scr_size >> 6;
         //pCurrentTrackScreenXYZ->screenPtAy[5].screen.x = iRightWallScreenX >> 6;
@@ -1376,7 +1376,7 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
               fGroundCameraY = (float)(dGroundDeltaX * vk2 + dGroundDeltaY * vk5 + dGroundDeltaZ * vk8);
               dGroundCameraZ = dGroundDeltaX * vk3 + dGroundDeltaY * vk6 + dGroundDeltaZ * vk9;
               fGroundCameraZ = (float)dGroundCameraZ;
-              //_CHP();
+              dGroundCameraZ = round(dGroundCameraZ);//_CHP();
               iGroundProjectedZ = (int)dGroundCameraZ;
               pCurrentGroundPt = (tGroundPt *)(pGroundPointZ + 1);
               if (fGroundCameraZ < 80.0)
@@ -1384,10 +1384,10 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
               dGroundViewDist = (double)VIEWDIST;
               dGroundInvZ = 1.0 / fGroundCameraZ;
               dGroundScreenX = dGroundViewDist * fGroundCameraX * dGroundInvZ + (double)xbase;
-              //_CHP();
+              dGroundScreenX = round(dGroundScreenX);//_CHP();
               xp = (int)dGroundScreenX;
               dGroundScreenY = dGroundInvZ * (dGroundViewDist * fGroundCameraY) + (double)ybase;
-              //_CHP();
+              dGroundScreenY = round(dGroundScreenY);//_CHP();
               yp = (int)dGroundScreenY;
               pScreenPoint->screen.x = xp * scr_size >> 6;
               //pScreenPoint->screen.x = iGroundScreenX >> 6;
@@ -1708,13 +1708,13 @@ void DrawTrack3(uint8 *pScrPtr, int iChaseCamIdx, int iCarIdx)
               dRoof2WallDepth1 = pScreenCoord_1->screenPtAy[3].projected.fZ;
             else
               dRoof2WallDepth1 = pScreenCoord_1->screenPtAy[2].projected.fZ;
-            //_CHP();
+            dRoof2WallDepth1 = round(dRoof2WallDepth1);//_CHP();
             iRightWallFlags = (int)dRoof2WallDepth1;
             if (TrakColour[iCurrentSect][TRAK_COLOUR_LEFT_WALL] >= 0)
               dRoof2WallDepth2 = pScreenCoord_1->screenPtAy[0].projected.fZ;
             else
               dRoof2WallDepth2 = pScreenCoord_1->screenPtAy[1].projected.fZ;
-            //_CHP();
+            dRoof2WallDepth2 = round(dRoof2WallDepth2);//_CHP();
             iLeftWallFlags = (int)dRoof2WallDepth2;
             if (pScreenCoord_1->screenPtAy[4].projected.fZ >= (double)pScreenCoord_1->screenPtAy[5].projected.fZ)
               fRoof2WallMinDepth = pScreenCoord_1->screenPtAy[5].projected.fZ;
@@ -4225,17 +4225,17 @@ LABEL_393:
           fCameraTransformY1 = (float)(dTransform4 * vk2 + dTransform5 * vk5 + dTransform6 * vk8);
           dTransform7 = dTransform4 * vk3 + dTransform5 * vk6 + dTransform6 * vk9;
           fCameraTransformX1 = (float)dTransform7;
-          //_CHP();
+          dTransform7 = round(dTransform7);//_CHP();
           iOffsetTmp2 = (int)dTransform7;
           if (fCameraTransformX1 < 80.0)
             fCameraTransformX1 = 80.0;
           dTransform8 = (double)VIEWDIST;
           dTransform9 = 1.0 / fCameraTransformX1;
           dTransform10 = dTransform8 * fCameraTransformZ1 * dTransform9 + (double)xbase;
-          //_CHP();
+          dTransform10 = round(dTransform10);//_CHP();
           xp = (int)dTransform10;
           dTransform11 = dTransform9 * (dTransform8 * fCameraTransformY1) + (double)ybase;
-          //_CHP();
+          dTransform11 = round(dTransform11);//_CHP();
           yp = (int)dTransform11;
           LightXYZ[0].projected.fZ = (float)iOffsetTmp2;
           dTransform12 = -100.0 * fTransformTempZ2 - 100.0 * fTransformTempZ1 - 100.0 * fRenderDepthTmp9 + fRenderDepthTmp14 - viewx;
@@ -4249,7 +4249,7 @@ LABEL_393:
           fCameraTransformY1 = (float)(dTransform12 * vk2 + dTransform13 * vk5 + dTransform14 * vk8);
           dTransform15 = dTransform12 * vk3 + dTransform13 * vk6 + dTransform14 * vk9;
           fCameraTransformX1 = (float)dTransform15;
-          //_CHP();
+          dTransform15 = round(dTransform15);//_CHP();
           iOffsetTmp2 = (int)dTransform15;
           LightXYZ[0].projected.fY = (float)(int)dTransform15;// iTransformInt2;
           if (fCameraTransformX1 < 80.0)
@@ -4257,10 +4257,10 @@ LABEL_393:
           dTransform16 = (double)VIEWDIST;
           dTransform17 = 1.0 / fCameraTransformX1;
           dTransform18 = dTransform16 * fCameraTransformZ1 * dTransform17 + (double)xbase;
-          //_CHP();
+          dTransform18 = round(dTransform18);//_CHP();
           xp = (int)dTransform18;
           dTransform19 = dTransform17 * (dTransform16 * fCameraTransformY1) + (double)ybase;
-          //_CHP();
+          dTransform19 = round(dTransform19);//_CHP();
           yp = (int)dTransform19;
           LightXYZ[1].projected.fZ = (float)iOffsetTmp2;
           dTransform20 = 100.0 * fTransformTempZ2 - 100.0 * fTransformTempZ1 - 100.0 * fRenderDepthTmp9 + fRenderDepthTmp14 - viewx;
@@ -4274,7 +4274,7 @@ LABEL_393:
           fCameraTransformY1 = (float)(dTransform20 * vk2 + dTransform21 * vk5 + dTransform22 * vk8);
           dTransform23 = dTransform20 * vk3 + dTransform21 * vk6 + dTransform22 * vk9;
           fCameraTransformX1 = (float)dTransform23;
-          //_CHP();
+          dTransform23 = round(dTransform23);//_CHP();
           iOffsetTmp2 = (int)dTransform23;
           LightXYZ[1].projected.fY = (float)(int)dTransform23;// iTransformInt4;
           if (fCameraTransformX1 < 80.0)
@@ -4282,10 +4282,10 @@ LABEL_393:
           dTransform24 = (double)VIEWDIST;
           dTransform25 = 1.0 / fCameraTransformX1;
           dTransform26 = dTransform24 * fCameraTransformZ1 * dTransform25 + (double)xbase;
-          //_CHP();
+          dTransform26 = round(dTransform26);//_CHP();
           xp = (int)dTransform26;
           dTransform27 = dTransform25 * (dTransform24 * fCameraTransformY1) + (double)ybase;
-          //_CHP();
+          dTransform27 = round(dTransform27);//_CHP();
           yp = (int)dTransform27;
           LightXYZ[2].projected.fZ = (float)iOffsetTmp2;
           dTransform28 = 100.0 * fTransformTempZ2 + 100.0 * fTransformTempZ1 - 100.0 * fRenderDepthTmp9 + fRenderDepthTmp14 - viewx;
@@ -4299,7 +4299,7 @@ LABEL_393:
           fCameraTransformY1 = (float)(dTransform28 * vk2 + dTransform29 * vk5 + dTransform30 * vk8);
           dTransform31 = dTransform28 * vk3 + dTransform29 * vk6 + dTransform30 * vk9;
           fCameraTransformX1 = (float)dTransform31;
-          //_CHP();
+          dTransform31 = round(dTransform31);//_CHP();
           iOffsetTmp2 = (int)dTransform31;
           LightXYZ[2].projected.fY = (float)(int)dTransform31;// iTransformInt6;
           if (fCameraTransformX1 < 80.0)
@@ -4307,10 +4307,10 @@ LABEL_393:
           dTransform32 = (double)VIEWDIST;
           dTransform33 = 1.0 / fCameraTransformX1;
           dTransform34 = dTransform32 * fCameraTransformZ1 * dTransform33 + (double)xbase;
-          //_CHP();
+          dTransform34 = round(dTransform34);//_CHP();
           xp = (int)dTransform34;
           dProjectionDepth1 = dTransform33 * (dTransform32 * fCameraTransformY1) + (double)ybase;
-          //_CHP();
+          dProjectionDepth1 = round(dProjectionDepth1);//_CHP();
           yp = (int)dProjectionDepth1;
           LightXYZ[3].projected.fZ = (float)iOffsetTmp2;
           dProjectionDepth2 = -100.0 * fTransformTempZ2 + 100.0 * fTransformTempZ1 + 100.0 * fRenderDepthTmp9 + fRenderDepthTmp14 - viewx;
@@ -4324,7 +4324,7 @@ LABEL_393:
           fCameraTransformY1 = (float)(dProjectionDepth2 * vk2 + dProjectionDepth3 * vk5 + dProjectionDepth4 * vk8);
           dProjectionDepth5 = dProjectionDepth2 * vk3 + dProjectionDepth3 * vk6 + dProjectionDepth4 * vk9;
           fCameraTransformX1 = (float)dProjectionDepth5;
-          //_CHP();
+          dProjectionDepth5 = round(dProjectionDepth5);//_CHP();
           iOffsetTmp2 = (int)dProjectionDepth5;
           LightXYZ[3].projected.fY = (float)(int)dProjectionDepth5;// iProjectionIndex2;
           if (fCameraTransformX1 < 80.0)
@@ -4332,10 +4332,10 @@ LABEL_393:
           dProjectionDepth6 = (double)VIEWDIST;
           dProjectionDepth7 = 1.0 / fCameraTransformX1;
           dProjectionDepth8 = dProjectionDepth6 * fCameraTransformZ1 * dProjectionDepth7 + (double)xbase;
-          //_CHP();
+          dProjectionDepth8 = round(dProjectionDepth8);//_CHP();
           xp = (int)dProjectionDepth8;
           dProjectionDepth9 = dProjectionDepth7 * (dProjectionDepth6 * fCameraTransformY1) + (double)ybase;
-          //_CHP();
+          dProjectionDepth9 = round(dProjectionDepth9);//_CHP();
           yp = (int)dProjectionDepth9;
           LightXYZ[4].projected.fZ = (float)iOffsetTmp2;
           dProjectionDepth10 = -100.0 * fTransformTempZ2 - 100.0 * fTransformTempZ1 + 100.0 * fRenderDepthTmp9 + fRenderDepthTmp14 - viewx;
@@ -4349,7 +4349,7 @@ LABEL_393:
           fCameraTransformY1 = (float)(dProjectionDepth10 * vk2 + dProjectionDepth11 * vk5 + dProjectionDepth12 * vk8);
           dProjectionDepth13 = dProjectionDepth10 * vk3 + dProjectionDepth11 * vk6 + dProjectionDepth12 * vk9;
           fCameraTransformX1 = (float)dProjectionDepth13;
-          //_CHP();
+          dProjectionDepth13 = round(dProjectionDepth13);//_CHP();
           iOffsetTmp2 = (int)dProjectionDepth13;
           LightXYZ[4].projected.fY = (float)(int)dProjectionDepth13;// iProjectionIndex4;
           if (fCameraTransformX1 < 80.0)
@@ -4357,10 +4357,10 @@ LABEL_393:
           dProjectionDepth14 = (double)VIEWDIST;
           dProjectionDepth15 = 1.0 / fCameraTransformX1;
           dProjectionDepth16 = dProjectionDepth14 * fCameraTransformZ1 * dProjectionDepth15 + (double)xbase;
-          //_CHP();
+          dProjectionDepth16 = round(dProjectionDepth16);//_CHP();
           xp = (int)dProjectionDepth16;
           dProjectionDepth17 = dProjectionDepth15 * (dProjectionDepth14 * fCameraTransformY1) + (double)ybase;
-          //_CHP();
+          dProjectionDepth17 = round(dProjectionDepth17);//_CHP();
           yp = (int)dProjectionDepth17;
           LightXYZ[5].projected.fZ = (float)iOffsetTmp2;
           dProjectionDepth18 = 100.0 * fTransformTempZ2 - 100.0 * fTransformTempZ1 + 100.0 * fRenderDepthTmp9 + fRenderDepthTmp14 - viewx;
@@ -4374,7 +4374,7 @@ LABEL_393:
           fCameraTransformY1 = (float)(dProjectionDepth18 * vk2 + dProjectionDepth19 * vk5 + dProjectionDepth20 * vk8);
           dProjectionDepth21 = dProjectionDepth18 * vk3 + dProjectionDepth19 * vk6 + dProjectionDepth20 * vk9;
           fCameraTransformX1 = (float)dProjectionDepth21;
-          //_CHP();
+          dProjectionDepth21 = round(dProjectionDepth21);//_CHP();
           iOffsetTmp2 = (int)dProjectionDepth21;
           LightXYZ[5].projected.fY = (float)(int)dProjectionDepth21; //iProjectionIndex6;
           if (fCameraTransformX1 < 80.0)
@@ -4382,10 +4382,10 @@ LABEL_393:
           dProjectionDepth22 = (double)VIEWDIST;
           dProjectionDepth23 = 1.0 / fCameraTransformX1;
           dProjectionDepth24 = dProjectionDepth22 * fCameraTransformZ1 * dProjectionDepth23 + (double)xbase;
-          //_CHP();
+          dProjectionDepth24 = round(dProjectionDepth24);//_CHP();
           xp = (int)dProjectionDepth24;
           dProjectionDepth25 = dProjectionDepth23 * (dProjectionDepth22 * fCameraTransformY1) + (double)ybase;
-          //_CHP();
+          dProjectionDepth25 = round(dProjectionDepth25);//_CHP();
           yp = (int)dProjectionDepth25;
           LightXYZ[6].projected.fZ = (float)iOffsetTmp2;
           dProjectionDepth26 = 100.0 * fTransformTempZ2 + 100.0 * fTransformTempZ1 + 100.0 * fRenderDepthTmp9 + fRenderDepthTmp14 - viewx;
@@ -4399,7 +4399,7 @@ LABEL_393:
           fCameraTransformY1 = (float)(dProjectionDepth26 * vk2 + dProjectionDepth27 * vk5 + dProjectionDepth28 * vk8);
           dProjectionDepth29 = dProjectionDepth26 * vk3 + dProjectionDepth27 * vk6 + dProjectionDepth28 * vk9;
           fCameraTransformX1 = (float)dProjectionDepth29;
-          //_CHP();
+          dProjectionDepth29 = round(dProjectionDepth29);//_CHP();
           iOffsetTmp2 = (int)dProjectionDepth29;
           LightXYZ[6].projected.fY = (float)(int)dProjectionDepth29; //iProjectionIndex8;
           if (fCameraTransformX1 < 80.0)
@@ -4407,11 +4407,11 @@ LABEL_393:
           dProjectionDepth30 = (double)VIEWDIST;
           dProjectionDepth31 = 1.0 / fCameraTransformX1;
           dProjectionDepth32 = dProjectionDepth30 * fCameraTransformZ1 * dProjectionDepth31 + (double)xbase;
-          //_CHP();
+          dProjectionDepth32 = round(dProjectionDepth32);//_CHP();
           xp = (int)dProjectionDepth32;
           dProjectionDepth33 = dProjectionDepth31 * (dProjectionDepth30 * fCameraTransformY1) + (double)ybase;
           iRenderingIndex1 = scr_size;
-          //_CHP();
+          dProjectionDepth33 = round(dProjectionDepth33);//_CHP();
           yp = (int)dProjectionDepth33;
           LightXYZ[7].screen.x = xp * scr_size >> 6;
           //LightXYZ[7].screen.x = iRenderingIndex2 >> 6;
@@ -5015,10 +5015,10 @@ void dodivide(float fX0_3D, float fY0_3D, float fZ0_3D,
             dInvZ = 1.0 / fY_mid01;
             dScreenScale = (double)scr_size;
             dProjX = (dViewDist * fX_mid01 * dInvZ + (double)xbase) * dScreenScale * 0.015625;
-            //_CHP();                             // round(dProjX)
+            dProjX = round(dProjX);//_CHP();
             iScreenX_mid12 = (int)dProjX;
             dProjY = dScreenScale * (199.0 - dInvZ * (dViewDist * fMidZ_quad) - (double)ybase) * 0.015625;
-            //_CHP();                             // round(dProjY)
+            dProjY = round(dProjY);//_CHP();
             iScreenX_subdiv1 = (int)dProjY;
           }
 
@@ -5042,10 +5042,10 @@ void dodivide(float fX0_3D, float fY0_3D, float fZ0_3D,
             dInvZ_1 = 1.0 / fZ_mid12;
             dScreenScale_1 = (double)scr_size;
             dProjX_1 = (dViewDist_1 * fX_mid12 * dInvZ_1 + (double)xbase) * dScreenScale_1 * 0.015625;
-            //_CHP();                             // round(dProjX_1)
+            dProjX_1 = round(dProjX_1);//_CHP();
             iScreenX_mid23 = (int)dProjX_1;
             dProjY_1 = dScreenScale_1 * (199.0 - dInvZ_1 * (dViewDist_1 * fY_mid12) - (double)ybase) * 0.015625;
-            //_CHP();                             // round(dProjY_1)
+            dProjY_1 = round(dProjY_1);//_CHP();
             iScreenY_mid12 = (int)dProjY_1;
           }
 
@@ -5155,10 +5155,10 @@ void dodivide(float fX0_3D, float fY0_3D, float fZ0_3D,
             dInvZ_2 = 1.0 / fZ_mid12_1;
             dScreenScale_2 = (double)scr_size;
             dProjX_2 = (dViewDist_2 * fX_mid12_1 * dInvZ_2 + (double)xbase) * dScreenScale_2 * 0.015625;
-            //_CHP();                             // round(dProjX_2)
+            dProjX_2 = round(dProjX_2);//_CHP();
             iScreenX_mid12_1 = (int)dProjX_2;
             dProjY_2 = dScreenScale_2 * (199.0 - dInvZ_2 * (dViewDist_2 * fY_mid12_1) - (double)ybase) * 0.015625;
-            //_CHP();                             // round(dProjY_2)
+            dProjY_2 = round(dProjY_2);//_CHP();
             iScreenY_mid12_1 = (int)dProjY_2;
           }
 
@@ -5180,10 +5180,10 @@ void dodivide(float fX0_3D, float fY0_3D, float fZ0_3D,
             dInvZ_3 = 1.0 / fZ_mid30;
             dScreenScale_3 = (double)scr_size;
             dProjX_3 = (dViewDist_3 * fX_mid30 * dInvZ_3 + (double)xbase) * dScreenScale_3 * 0.015625;
-            //_CHP();                             // round(dProjX_3)
+            dProjX_3 = round(dProjX_3);//_CHP();
             iScreenX_mid30 = (int)dProjX_3;
             dProjY_3 = dScreenScale_3 * (199.0 - dInvZ_3 * (dViewDist_3 * fY_mid30) - (double)ybase) * 0.015625;
-            //_CHP();                             // round(dProjY_3)
+            dProjY_3 = round(dProjY_3);//_CHP();
             iScreenY_mid30 = (int)dProjY_3;
           }
 
@@ -5290,10 +5290,10 @@ void dodivide(float fX0_3D, float fY0_3D, float fZ0_3D,
             dInvZ_4 = 1.0 / fY_mid01;
             dScreenScale_4 = (double)scr_size;
             dProjX_4 = (dViewDist_4 * fX_mid01 * dInvZ_4 + (double)xbase) * dScreenScale_4 * 0.015625;
-            //_CHP();                             // round(dProjX_4)
+            dProjX_4 = round(dProjX_4);//_CHP();
             iScreenX_mid01 = (int)dProjX_4;
             dProjY_4 = dScreenScale_4 * (199.0 - dInvZ_4 * (dViewDist_4 * fMidZ_quad) - (double)ybase) * 0.015625;
-            //_CHP();                             // round(dProjY_4)
+            dProjY_4 = round(dProjY_4);//_CHP();
             iScreenY_mid01 = (int)dProjY_4;
           }
 
@@ -5315,10 +5315,10 @@ void dodivide(float fX0_3D, float fY0_3D, float fZ0_3D,
             dInvZ_5 = 1.0 / fZ_mid12_2;
             dScreenScale_5 = (double)scr_size;
             dProjX_5 = (dViewDist_5 * fX_mid12_2 * dInvZ_5 + (double)xbase) * dScreenScale_5 * 0.015625;
-            //_CHP();                             // round(dProjX_5)
+            dProjX_5 = round(dProjX_5);//_CHP();
             iScreenX_mid12_2 = (int)dProjX_5;
             dProjY_5 = dScreenScale_5 * (199.0 - dInvZ_5 * (dViewDist_5 * fY_mid12_2) - (double)ybase) * 0.015625;
-            //_CHP();                             // round(dProjY_5)
+            dProjY_5 = round(dProjY_5);//_CHP();
             iScreenY_mid23 = (int)dProjY_5;
           }
 
@@ -5340,10 +5340,10 @@ void dodivide(float fX0_3D, float fY0_3D, float fZ0_3D,
             dInvZ_6 = 1.0 / fZ_mid23;
             dScreenScale_6 = (double)scr_size;
             dProjX_6 = (dViewDist_6 * fX_mid23 * dInvZ_6 + (double)xbase) * dScreenScale_6 * 0.015625;
-            //_CHP();                             // round(dProjX_6)
+            dProjX_6 = round(dProjX_6);//_CHP();
             iScreenX_mid23_1 = (int)dProjX_6;
             dProjY_6 = dScreenScale_6 * (199.0 - dInvZ_6 * (dViewDist_6 * fY_mid23) - (double)ybase) * 0.015625;
-            //_CHP();                             // round(dProjY_6)
+            dProjY_6 = round(dProjY_6);//_CHP();
             iScreenY_mid30_1 = (int)dProjY_6;
           }
 
@@ -5365,10 +5365,10 @@ void dodivide(float fX0_3D, float fY0_3D, float fZ0_3D,
             dInvZ_7 = 1.0 / fZ_mid30_1;
             dScreenScale_7 = (double)scr_size;
             dProjX_7 = (dViewDist_7 * fX_mid30_1 * dInvZ_7 + (double)xbase) * dScreenScale_7 * 0.015625;
-            //_CHP();                             // round(dProjX_7)
+            dProjX_7= round(dProjX_7);//_CHP();
             iScreenX_mid30_1 = (int)dProjX_7;
             dProjY_7 = dScreenScale_7 * (199.0 - dInvZ_7 * (dViewDist_7 * fY_mid30_1) - (double)ybase) * 0.015625;
-            //_CHP();                             // round(dProjY_7)
+            dProjY_7 = round(dProjY_7);//_CHP();
             iScreenY_mid30_2 = (int)dProjY_7;
           }
 
@@ -5390,10 +5390,10 @@ void dodivide(float fX0_3D, float fY0_3D, float fZ0_3D,
             dInvZ_8 = 1.0 / fZ_center;
             dScreenScale_8 = (double)scr_size;
             dProjX_8 = (dViewDist_8 * fX_center * dInvZ_8 + (double)xbase) * dScreenScale_8 * 0.015625;
-            //_CHP();                             // round(dProjX_8)
+            dProjX_8 = round(dProjX_8);//_CHP();
             iScreenX_center = (int)dProjX_8;
             dProjY_8 = dScreenScale_8 * (199.0 - dInvZ_8 * (dViewDist_8 * fY_center) - (double)ybase) * 0.015625;
-            //_CHP();                             // round(dProjY_8)
+            dProjY_8 = round(dProjY_8);//_CHP();
             iScreenY_center = (int)dProjY_8;
           }
 

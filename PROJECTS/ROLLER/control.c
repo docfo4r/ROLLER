@@ -3005,7 +3005,7 @@ LABEL_171:
     iChunkPlus2 -= TRAK_LEN;
   dGroundHeightForward = (GroundPt[iChunkPlus2].pointAy[2].fZ + GroundPt[iChunkPlus2].pointAy[3].fZ + GroundPt[iChunkPlus3].pointAy[2].fZ + GroundPt[iChunkPlus3].pointAy[3].fZ)
     * 0.25;                  // Check ground height ahead to prevent impossible jumps
-  //_CHP();
+  dGroundHeightForward = floor(dGroundHeightForward);//_CHP();
   if (dGroundHeightForward > GroundLevel[iChunkPlus2] + 20.0)
     pCar->fFinalSpeed = 0.0;
   iChunkMinus1 = pCar->iLastValidChunk - 1;
@@ -3019,7 +3019,7 @@ LABEL_171:
                          + GroundPt[iChunkMinus1].pointAy[2].fZ
                          + GroundPt[iChunkMinus1].pointAy[3].fZ)
     * 0.25;
-  //_CHP();
+  dGroundHeightBackward = floor(dGroundHeightBackward);//_CHP();
   if (dGroundHeightBackward > GroundLevel[iChunkMinus2] + 20.0)
     pCar->fFinalSpeed = 0.0;
   if (fCoordTransformY <= 0.0) {

@@ -539,19 +539,19 @@ void DrawBuilding(int iBuildingIdx, uint8 *pScrPtr)
     fMatrix00 = (float)(dCosYaw * dCosPitch);
     fMatrix02 = (float)(-dCosYaw * dSinPitch * dCosRoll - dSinYaw * dSinRoll);
     dTransformedX = fX * fMatrix00 + fCoordY * fMatrix01 + v109 * fMatrix02 + fBuildingX - viewx;// Apply 3D rotation and translation to building coordinates
-    //_CHP();
+    dTransformedX = floor(dTransformedX);//_CHP();
     dTempX = dTransformedX;
     fMatrix10 = (float)(dSinYaw * dCosPitch);
     fMatrix12 = (float)(-dSinYaw * dSinPitch * dCosRoll + dCosYaw * dSinRoll);
     fMatrix11 = (float)(dSinYaw * dSinPitch * dSinRoll + dCosYaw * dCosRoll);
     dTransformedY = fX * fMatrix10 + fCoordY * fMatrix11 + v109 * fMatrix12 + fBuildingY - viewy;
-    //_CHP();
+    dTransformedY = floor(dTransformedY);//_CHP();
     dTempY = dTransformedY;
     fVert2X = (float)(dCosPitch * dCosRoll);
     fMatrix20 = (float)dSinPitch;
     fMatrix21 = (float)(-dSinRoll * dCosPitch);
     dTransformedZ = fX * fMatrix20 + fCoordY * fMatrix21 + v109 * fVert2X + fBuildingZ - viewz;
-    //_CHP();
+    dTransformedZ = floor(dTransformedZ);//_CHP();
     dViewX = dTempX * vk1 + dTempY * vk4 + dTransformedZ * vk7;// Transform world coordinates to view space
     //_CHP();
     iViewX = (int)dViewX;
