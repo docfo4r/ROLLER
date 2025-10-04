@@ -15,6 +15,7 @@ extern tJoyPos g_rollerJoyPos;
 extern bool g_bPaletteSet;
 extern bool g_bForceMaxDraw;
 extern uint8 testbuf[4096];
+extern char g_szCDPath[256];
 
 //-------------------------------------------------------------------------------------------------
 
@@ -68,6 +69,7 @@ void autoselectsoundlanguage();
 int GetHighOrderRand(int iRange, int iRandValue);
 int ReadUnalignedInt(const void *pData);
 void LBAToMSF(uint32 uiLBA, uint8 *pbyMinute, uint8 *pbySecond, uint8 *pbyFrame);
+int GetCDPath();
 
 //-------------------------------------------------------------------------------------------------
 #endif
