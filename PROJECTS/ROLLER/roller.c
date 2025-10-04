@@ -904,7 +904,7 @@ void apply_pan_u8(Uint8 *raw, int length, float pan)
 void DIGI_AudioStreamCallback(void *userdata, SDL_AudioStream *stream, int additional_amount, int total_amount)
 {
   tSampleData *data = (tSampleData *)userdata;
-  if (data && data->pSample)
+  if (data && data->pSample && additional_amount > 0)
     SDL_PutAudioStreamData(stream, data->pSample, data->iLength);
 }
 
@@ -926,6 +926,14 @@ int DIGISampleStart(tSampleData *data)
   int iFlags = data->iFlags;
   int iPan = data->iPan;
 
+  if (digi_stream[index]) {
+    //audio stream is available but needs to be destroyed
+    SDL_PauseAudioStreamDevice(digi_stream[index]);
+    SDL_DestroyAudioStream(digi_stream[index]);
+    digi_stream[index] = NULL;
+    memset(&digi_sample_data[index], 0, sizeof(tSampleData));
+  }
+
   if (!digi_stream[index]) {
     SDL_AudioSpec spec;
     spec.channels = 1; // Mono
@@ -945,6 +953,8 @@ int DIGISampleStart(tSampleData *data)
 
       digi_stream[index] = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, DIGI_AudioStreamCallback, &digi_sample_data[index]);
     }
+  } else {
+    assert(0); //should never happen
   }
 
   if (!digi_stream[index]) {
