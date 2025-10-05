@@ -67,6 +67,7 @@ uint8 testbuf[4096];
 static uint8 *s_pRGBBuffer = NULL;
 static uint8 *s_pDebugBuffer = NULL;
 char g_szCDPath[256] = "";
+uint64 g_ullTimer150Ms = 0;
 
 SDL_Mutex *g_pTimerMutex = NULL;
 tTimerData timerDataAy[MAX_TIMERS] = { 0 };
@@ -595,6 +596,11 @@ void UpdateSDL()
 #if _DEBUG
   UpdateDebugLoop(); // Add by ROLLER
 #endif // _DEBUG
+  uint64 ullCurTicksMs = SDL_GetTicks();
+  if (ullCurTicksMs > g_ullTimer150Ms) {
+    g_ullTimer150Ms = ullCurTicksMs + 150;
+    UpdateAudioTracks();
+  }
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -75,6 +75,7 @@ void ROLLERGetAudioInfo();
 void ROLLERStopTrack();
 void ROLLERPlayTrack(int iTrack);
 void ROLLERPlayTrack4(int iStartTrack);
+void UpdateAudioTracks();
 void CleanupAudioCD();
 
 //-------------------------------------------------------------------------------------------------
