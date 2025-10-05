@@ -1687,7 +1687,7 @@ void ROLLERGetAudioInfo()
 
   // Open CD audio device
   mciOpenParms.lpstrDeviceType = (LPCSTR)MCI_DEVTYPE_CD_AUDIO;
-  if (mciSendCommand(NULL, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID,
+  if (mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID,
                      (DWORD_PTR)&mciOpenParms) == 0) {
     g_wDeviceID = mciOpenParms.wDeviceID;
 
@@ -1700,7 +1700,7 @@ void ROLLERGetAudioInfo()
     mciStatusParms.dwItem = MCI_STATUS_NUMBER_OF_TRACKS;
     if (mciSendCommand(g_wDeviceID, MCI_STATUS, MCI_STATUS_ITEM,
                        (DWORD_PTR)&mciStatusParms) == 0) {
-      g_iNumTracks = mciStatusParms.dwReturn;
+      g_iNumTracks = (int)mciStatusParms.dwReturn;
       g_bUsingRealCD = true;
     }
   }
@@ -1735,8 +1735,7 @@ void ROLLERGetAudioInfo()
     char szTrackFile[256];
     FILE *fp;
 
-    // Look for ripped tracks (users need to rip their CD audio)
-    // Common formats: track02.ogg, track02.wav, etc. (track 1 is data)
+    // Look for ripped tracks
     for (int iTrack = 2; iTrack <= 99; iTrack++) {
       sprintf(szTrackFile, "./music/track%02d.ogg", iTrack);
       fp = ROLLERfopen(szTrackFile, "rb");
@@ -1833,10 +1832,7 @@ void ROLLERPlayTrack(int iTrack)
 
       SDL_IOStream *io = SDL_IOFromFile(szTrackFile, "rb");
       if (io) {
-        SDL_AudioSpec *pLoadedSpec;
-        if (SDL_LoadWAV_IO(io, true, &pLoadedSpec, &g_pAudioData, &g_uiAudioLen)) {
-          spec = *pLoadedSpec;
-          SDL_free(pLoadedSpec);
+        if (SDL_LoadWAV_IO(io, true, &spec, &g_pAudioData, &g_uiAudioLen)) {
 
           g_pCurrentStream = SDL_OpenAudioDeviceStream(
               SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK,
