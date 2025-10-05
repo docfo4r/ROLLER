@@ -14,6 +14,9 @@
 #ifdef IS_WINDOWS
 #include <io.h>
 #include <direct.h>
+#include <windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 #define chdir _chdir
 #define open _open
 #define close _close
@@ -28,6 +31,9 @@
 #endif
 #ifdef IS_LINUX
 #include <linux/cdrom.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+//TODO: Linux/Mac would need libcdio or similar
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -1637,6 +1643,307 @@ int GetCDPath()
 #endif
 
   return 0;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+// Globals for CD audio management
+int g_iNumTracks = 0;
+int g_iCurrentTrack = -1;
+int g_iStartTrack = -1;   // For PlayTrack4
+int g_iTrackCount = 0;    // For PlayTrack4
+bool g_bRepeat = false;
+bool g_bUsingRealCD = false;
+bool g_bGotAudioInfo = false;
+
+// For fallback to audio files if no CD
+static SDL_AudioStream *g_pCurrentStream = NULL;
+static uint8 *g_pAudioData = NULL;
+static uint32 g_uiAudioLen = 0;
+
+#ifdef IS_WINDOWS
+static MCIDEVICEID g_wDeviceID = 0;
+#else
+static int g_iCDHandle = -1;
+#endif
+
+void ROLLERGetAudioInfo()
+{
+  SDL_Log("ROLLERGetAudioInfo");
+
+  //only get info once
+  if (g_bGotAudioInfo)
+    return;
+  g_bGotAudioInfo = true;
+
+  g_iNumTracks = 0;
+  g_bUsingRealCD = false;
+
+#ifdef IS_WINDOWS
+    // Windows: Use MCI (Media Control Interface)
+  MCI_OPEN_PARMS mciOpenParms;
+  MCI_SET_PARMS mciSetParms;
+  MCI_STATUS_PARMS mciStatusParms;
+
+  // Open CD audio device
+  mciOpenParms.lpstrDeviceType = (LPCSTR)MCI_DEVTYPE_CD_AUDIO;
+  if (mciSendCommand(NULL, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID,
+                     (DWORD_PTR)&mciOpenParms) == 0) {
+    g_wDeviceID = mciOpenParms.wDeviceID;
+
+    // Set time format to tracks
+    mciSetParms.dwTimeFormat = MCI_FORMAT_TMSF;
+    mciSendCommand(g_wDeviceID, MCI_SET, MCI_SET_TIME_FORMAT,
+                  (DWORD_PTR)&mciSetParms);
+
+    // Get number of tracks
+    mciStatusParms.dwItem = MCI_STATUS_NUMBER_OF_TRACKS;
+    if (mciSendCommand(g_wDeviceID, MCI_STATUS, MCI_STATUS_ITEM,
+                       (DWORD_PTR)&mciStatusParms) == 0) {
+      g_iNumTracks = mciStatusParms.dwReturn;
+      g_bUsingRealCD = true;
+    }
+  }
+
+#elif defined(IS_LINUX)
+    // Linux: Try to open CD device
+  const char *szCDDevices[] = {
+      "/dev/cdrom",
+      "/dev/sr0",
+      "/dev/sr1",
+      "/dev/dvd"
+  };
+
+  for (int i = 0; i < sizeof(szCDDevices) / sizeof(szCDDevices[0]); i++) {
+    g_iCDHandle = open(szCDDevices[i], O_RDONLY | O_NONBLOCK);
+    if (g_iCDHandle >= 0) {
+      struct cdrom_tochdr tochdr;
+      if (ioctl(g_iCDHandle, CDROMREADTOCHDR, &tochdr) == 0) {
+          // First track is usually data (track 1), audio starts at track 2
+        g_iNumTracks = tochdr.cdth_trk1;  // Last track number
+        g_bUsingRealCD = SDL_TRUE;
+        break;
+      }
+      close(g_iCDHandle);
+      g_iCDHandle = -1;
+    }
+  }
+#endif
+
+    // If no real CD found, check for ripped tracks
+  if (!g_bUsingRealCD) {
+    char szTrackFile[256];
+    FILE *fp;
+
+    // Look for ripped tracks (users need to rip their CD audio)
+    // Common formats: track02.ogg, track02.wav, etc. (track 1 is data)
+    for (int iTrack = 2; iTrack <= 99; iTrack++) {
+      sprintf(szTrackFile, "./music/track%02d.ogg", iTrack);
+      fp = ROLLERfopen(szTrackFile, "rb");
+      if (!fp) {
+        sprintf(szTrackFile, "./music/track%02d.wav", iTrack);
+        fp = ROLLERfopen(szTrackFile, "rb");
+      }
+      if (!fp) {
+        sprintf(szTrackFile, "./music/track%02d.mp3", iTrack);
+        fp = ROLLERfopen(szTrackFile, "rb");
+      }
+
+      if (fp) {
+        fclose(fp);
+        g_iNumTracks = iTrack;  // Keep counting up
+      } else if (iTrack > 2) {
+        break;  // Stop at first missing track after track 2
+      }
+    }
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void ROLLERStopTrack()
+{
+  SDL_Log("ROLLERStopTrack %d", g_iCurrentTrack);
+
+  if (g_bUsingRealCD) {
+#ifdef IS_WINDOWS
+    if (g_wDeviceID) {
+      mciSendCommand(g_wDeviceID, MCI_STOP, 0, 0);
+    }
+#elif defined(IS_LINUX)
+    if (g_iCDHandle >= 0) {
+      ioctl(g_iCDHandle, CDROMSTOP);
+    }
+#endif
+  } else {
+      // Stop file playback
+    if (g_pCurrentStream) {
+      SDL_DestroyAudioStream(g_pCurrentStream);
+      g_pCurrentStream = NULL;
+    }
+    if (g_pAudioData) {
+      SDL_free(g_pAudioData);
+      g_pAudioData = NULL;
+    }
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void ROLLERPlayTrack(int iTrack)
+{
+  SDL_Log("ROLLERPlayTrack %d", iTrack);
+
+// CD audio tracks start at 2 (track 1 is data)
+  if (iTrack < 2 || iTrack > g_iNumTracks) {
+    return;
+  }
+
+  ROLLERStopTrack();
+
+  if (g_bUsingRealCD) {
+#ifdef IS_WINDOWS
+    if (g_wDeviceID) {
+      MCI_PLAY_PARMS mciPlayParms;
+      mciPlayParms.dwFrom = MCI_MAKE_TMSF(iTrack, 0, 0, 0);
+      mciPlayParms.dwTo = MCI_MAKE_TMSF(iTrack + 1, 0, 0, 0);
+      mciSendCommand(g_wDeviceID, MCI_PLAY, MCI_FROM | MCI_TO,
+                    (DWORD_PTR)&mciPlayParms);
+    }
+#elif defined(IS_LINUX)
+    if (g_iCDHandle >= 0) {
+      struct cdrom_ti ti;
+      ti.cdti_trk0 = iTrack;
+      ti.cdti_ind0 = 0;
+      ti.cdti_trk1 = iTrack;
+      ti.cdti_ind1 = 0;
+      ioctl(g_iCDHandle, CDROMPLAYTRKIND, &ti);
+    }
+#endif
+  } else {
+      // Play from file
+    char szTrackFile[256];
+    SDL_AudioSpec spec;
+
+    // Try different formats
+    sprintf(szTrackFile, "./music/track%02d.wav", iTrack);
+    FILE *fp = ROLLERfopen(szTrackFile, "rb");
+    if (fp) {
+      fclose(fp);
+
+      SDL_IOStream *io = SDL_IOFromFile(szTrackFile, "rb");
+      if (io) {
+        SDL_AudioSpec *pLoadedSpec;
+        if (SDL_LoadWAV_IO(io, true, &pLoadedSpec, &g_pAudioData, &g_uiAudioLen)) {
+          spec = *pLoadedSpec;
+          SDL_free(pLoadedSpec);
+
+          g_pCurrentStream = SDL_OpenAudioDeviceStream(
+              SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK,
+              &spec, NULL, NULL);
+
+          if (g_pCurrentStream) {
+            SDL_PutAudioStreamData(g_pCurrentStream, g_pAudioData, g_uiAudioLen);
+            SDL_ResumeAudioStreamDevice(g_pCurrentStream);
+          }
+        }
+      }
+    }
+    // Add OGG/MP3 support here if using SDL_mixer
+  }
+
+  g_iCurrentTrack = iTrack;
+  g_bRepeat = false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void ROLLERPlayTrack4(int iStartTrack)
+{
+  g_iStartTrack = iStartTrack;
+  g_iTrackCount = 4;
+  g_bRepeat = false;
+
+  ROLLERPlayTrack(iStartTrack);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Call this periodically to handle track transitions and repeat
+void UpdateAudioTracks()
+{
+  bool bTrackFinished = false;
+
+  if (g_iCurrentTrack < 0) {
+    return;
+  }
+
+  if (g_bUsingRealCD) {
+#ifdef IS_WINDOWS
+    if (g_wDeviceID) {
+      MCI_STATUS_PARMS mciStatusParms;
+      mciStatusParms.dwItem = MCI_STATUS_MODE;
+      mciSendCommand(g_wDeviceID, MCI_STATUS, MCI_STATUS_ITEM,
+                    (DWORD_PTR)&mciStatusParms);
+
+      if (mciStatusParms.dwReturn == MCI_MODE_STOP) {
+        bTrackFinished = true;
+      }
+    }
+#elif defined(IS_LINUX)
+    if (g_iCDHandle >= 0) {
+      struct cdrom_subchnl subchnl;
+      subchnl.cdsc_format = CDROM_MSF;
+      if (ioctl(g_iCDHandle, CDROMSUBCHNL, &subchnl) == 0) {
+        if (subchnl.cdsc_audiostatus == CDROM_AUDIO_COMPLETED) {
+          bTrackFinished = SDL_TRUE;
+        }
+      }
+    }
+#endif
+  } else if (g_pCurrentStream) {
+      // Check file playback
+    int iQueued = SDL_GetAudioStreamQueued(g_pCurrentStream);
+    if (iQueued == 0) {
+      bTrackFinished = true;
+    }
+  }
+
+  if (bTrackFinished) {
+    if (g_bRepeat) {
+        // Repeat current track
+      ROLLERPlayTrack(g_iCurrentTrack);
+    } else if (g_iTrackCount > 1) {
+        // PlayTrack4 sequence
+      g_iTrackCount--;
+      int iNextTrack = g_iCurrentTrack + 1;
+      if (iNextTrack > g_iNumTracks) {
+        iNextTrack = 2;  // Wrap to first audio track
+      }
+      ROLLERPlayTrack(iNextTrack);
+    } else {
+      g_iCurrentTrack = -1;
+    }
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CleanupAudioCD()
+{
+  SDL_Log("CleanupAudioCD");
+  ROLLERStopTrack();
+
+#ifdef IS_WINDOWS
+  if (g_wDeviceID) {
+    mciSendCommand(g_wDeviceID, MCI_CLOSE, 0, 0);
+    g_wDeviceID = 0;
+  }
+#elif defined(IS_LINUX)
+  if (g_iCDHandle >= 0) {
+    close(g_iCDHandle);
+    g_iCDHandle = -1;
+  }
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

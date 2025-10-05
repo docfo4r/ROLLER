@@ -1952,7 +1952,7 @@ void play_game(int iTrack)
       racing = replayspeed;
     if (track_playing && frames - start_cd > 36 * track_duration / 75)// Handle CD audio track looping based on duration
     {
-      StopTrack();
+      //StopTrack(); //removed by ROLLER
       RepeatTrack();
       start_cd = frames;
     }

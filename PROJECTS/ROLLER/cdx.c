@@ -192,146 +192,7 @@ void *AllocDOSMemory(int iSizeBytes, int16 *pOutSegment)
 //00075020
 void GetAudioInfo()
 {
-#ifdef IS_WINDOWS
-  // Windows implementation using DeviceIoControl
-  //TODO get correct CD drive
-  HANDLE hDevice = CreateFile("\\\\.\\I:", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-  if (hDevice == INVALID_HANDLE_VALUE)
-    return;
-
-  CDROM_TOC toc;
-  DWORD dwBytesReturned;
-
-  // Read TOC
-  if (!DeviceIoControl(hDevice, IOCTL_CDROM_READ_TOC, NULL, 0, &toc, sizeof(toc), &dwBytesReturned, NULL)) {
-    CloseHandle(hDevice);
-    return;
-  }
-
-  // Extract first/last track
-  first_track = toc.FirstTrack;
-  last_track = toc.LastTrack;
-
-  if (last_track >= 99) {
-    CloseHandle(hDevice);
-    return;
-  }
-
-  uint32 track_sectors[100];
-
-  // Process each track
-  if (first_track <= last_track) {
-    for (uint8 byTrack = first_track; byTrack <= last_track; byTrack++) {
-      // Find track descriptor in TOC
-      int iTrackIndex = byTrack - first_track;
-      if (iTrackIndex < toc.LastTrack) {
-        TRACK_DATA *pTrackData = &toc.TrackData[iTrackIndex];
-
-        // Convert MSF to LBA (Windows TOC is already in binary, not BCD)
-        uint32 uiMinutes = pTrackData->Address[1];
-        uint32 uiSeconds = pTrackData->Address[2];
-        uint32 uiFrames = pTrackData->Address[3];
-        uint32 uiSector = ((uiMinutes * 60) + uiSeconds) * 75 + uiFrames - 150;
-
-        trackstarts[byTrack] = uiSector;
-        track_sectors[byTrack] = uiSector;
-      }
-    }
-
-    // Get lead-out track (last entry in TrackData)
-    TRACK_DATA *pLeadOut = &toc.TrackData[toc.LastTrack];
-    uint32 uiLeadMin = pLeadOut->Address[1];
-    uint32 uiLeadSec = pLeadOut->Address[2];
-    uint32 uiLeadFrame = pLeadOut->Address[3];
-    uint32 uiLeadOutSector = ((uiLeadMin * 60) + uiLeadSec) * 75 + uiLeadFrame - 150;
-    track_sectors[last_track + 1] = uiLeadOutSector;
-
-    // Calculate track lengths
-    for (uint8 byTrack = first_track; byTrack <= last_track; byTrack++) {
-      uint32 uiLength = track_sectors[byTrack + 1] - track_sectors[byTrack];
-      tracklengths[byTrack] = uiLength;
-    }
-  }
-
-  CloseHandle(hDevice);
-
-//#elif IS_LINUX
-  //// Linux implementation using ioctl
-  ////TODO get correct CD drive
-  //int iFd = open("/dev/cdrom", O_RDONLY | O_NONBLOCK);
-  //if (iFd < 0)
-  //  return;
-  //
-  //struct cdrom_tochdr tochdr;
-  //struct cdrom_tocentry tocentry;
-  //
-  //// Read TOC header
-  //if (ioctl(iFd, CDROMREADTOCHDR, &tochdr) < 0) {
-  //  close(iFd);
-  //  return;
-  //}
-  //
-  //first_track = tochdr.cdth_trk0;
-  //last_track = tochdr.cdth_trk1;
-  //
-  //if (last_track >= 99) {
-  //  close(iFd);
-  //  return;
-  //}
-  //
-  //uint32 track_sectors[100];
-  //
-  //// Process each track
-  //if (first_track <= last_track) {
-  //  for (uint8 byTrack = first_track; byTrack <= last_track; byTrack++) {
-  //    tocentry.cdte_track = byTrack;
-  //    tocentry.cdte_format = CDROM_MSF;
-  //
-  //    if (ioctl(iFd, CDROMREADTOCENTRY, &tocentry) < 0)
-  //      continue;
-  //
-  //    // Convert MSF to LBA (Linux returns BCD format)
-  //    uint8 byMinutesBCD = tocentry.cdte_addr.msf.minute;
-  //    uint8 bySecondsBCD = tocentry.cdte_addr.msf.second;
-  //    uint8 byFramesBCD = tocentry.cdte_addr.msf.frame;
-  //
-  //    // Convert BCD to binary
-  //    uint32 uiMinutes = ((byMinutesBCD >> 4) * 10) + (byMinutesBCD & 0x0F);
-  //    uint32 uiSeconds = ((bySecondsBCD >> 4) * 10) + (bySecondsBCD & 0x0F);
-  //    uint32 uiFrames = ((byFramesBCD >> 4) * 10) + (byFramesBCD & 0x0F);
-  //
-  //    uint32 uiSector = ((uiMinutes * 60) + uiSeconds) * 75 + uiFrames - 150;
-  //
-  //    trackstarts[byTrack] = uiSector;
-  //    track_sectors[byTrack] = uiSector;
-  //  }
-  //
-  //  // Get lead-out track
-  //  tocentry.cdte_track = CDROM_LEADOUT;
-  //  tocentry.cdte_format = CDROM_MSF;
-  //
-  //  if (ioctl(iFd, CDROMREADTOCENTRY, &tocentry) == 0) {
-  //    uint8 byLeadMinBCD = tocentry.cdte_addr.msf.minute;
-  //    uint8 byLeadSecBCD = tocentry.cdte_addr.msf.second;
-  //    uint8 byLeadFrameBCD = tocentry.cdte_addr.msf.frame;
-  //
-  //    uint32 uiLeadMin = ((byLeadMinBCD >> 4) * 10) + (byLeadMinBCD & 0x0F);
-  //    uint32 uiLeadSec = ((byLeadSecBCD >> 4) * 10) + (byLeadSecBCD & 0x0F);
-  //    uint32 uiLeadFrame = ((byLeadFrameBCD >> 4) * 10) + (byLeadFrameBCD & 0x0F);
-  //
-  //    uint32 uiLeadOutSector = ((uiLeadMin * 60) + uiLeadSec) * 75 + uiLeadFrame - 150;
-  //    track_sectors[last_track + 1] = uiLeadOutSector;
-  //
-  //    // Calculate track lengths
-  //    for (uint8 byTrack = first_track; byTrack <= last_track; byTrack++) {
-  //      uint32 uiLength = track_sectors[byTrack + 1] - track_sectors[byTrack];
-  //      tracklengths[byTrack] = uiLength;
-  //    }
-  //  }
-  //}
-  //
-  //close(iFd);
-#endif
+  ROLLERGetAudioInfo();
   //uint8 buffer[7];
   //uint32 track_sectors[100];  // Temporary storage for track sectors (including lead-out)
   //
@@ -391,14 +252,15 @@ void GetAudioInfo()
 //000751A0
 void PlayTrack(int iTrack)
 {
-  // Prepare audio control structure
-  playControl.byPlayFlag = 1;
-  playControl.uiStartSector = trackstarts[iTrack];
-  playControl.uiSectorCount = tracklengths[iTrack];
-
-  // Execute audio command
-  AudioIOCTL(0x84u);
-
+  ROLLERPlayTrack(iTrack);
+  //// Prepare audio control structure
+  //playControl.byPlayFlag = 1;
+  //playControl.uiStartSector = trackstarts[iTrack];
+  //playControl.uiSectorCount = tracklengths[iTrack];
+  //
+  //// Execute audio command
+  //AudioIOCTL(0x84u);
+  
   // Update global state
   track_playing = -1;
   last_audio_track = iTrack;
@@ -409,20 +271,21 @@ void PlayTrack(int iTrack)
 //000751F0
 void PlayTrack4(int iStartTrack)
 {
+  ROLLERPlayTrack4(iStartTrack);
   // Calculate total duration of four tracks
-  uint32 uiTotalDuration = tracklengths[iStartTrack] +
-    tracklengths[iStartTrack + 1] + tracklengths[iStartTrack + 2] + tracklengths[iStartTrack + 3];
-
-  // Prepare audio control structure
-  playControl.byPlayFlag = 1;  // Play command flag
-  playControl.uiStartSector = trackstarts[iStartTrack];  // Start sector
-  playControl.uiSectorCount = uiTotalDuration;  // Sector count
-
-  // Execute audio command
-  AudioIOCTL(0x84);  // 0x84 = Play Audio command
-
-  // Update global state
-  track_duration = uiTotalDuration;
+  //uint32 uiTotalDuration = tracklengths[iStartTrack] +
+  //  tracklengths[iStartTrack + 1] + tracklengths[iStartTrack + 2] + tracklengths[iStartTrack + 3];
+  //
+  //// Prepare audio control structure
+  //playControl.byPlayFlag = 1;  // Play command flag
+  //playControl.uiStartSector = trackstarts[iStartTrack];  // Start sector
+  //playControl.uiSectorCount = uiTotalDuration;  // Sector count
+  //
+  //// Execute audio command
+  //AudioIOCTL(0x84);  // 0x84 = Play Audio command
+  //
+  //// Update global state
+  //track_duration = uiTotalDuration;
   track_playing = -1; // Indicate track is starting
   last_audio_track = iStartTrack;
 }
@@ -431,10 +294,11 @@ void PlayTrack4(int iStartTrack)
 //00075260
 void RepeatTrack()
 {
-  playControl.byPlayFlag = 1;
-  playControl.uiStartSector = trackstarts[last_audio_track];
-  playControl.uiSectorCount = track_duration;
-  AudioIOCTL(0x84u);
+  g_bRepeat = true;
+  //playControl.byPlayFlag = 1;
+  //playControl.uiStartSector = trackstarts[last_audio_track];
+  //playControl.uiSectorCount = track_duration;
+  //AudioIOCTL(0x84u);
   track_playing = -1;
 }
 
@@ -442,7 +306,8 @@ void RepeatTrack()
 //000752A0
 void StopTrack()
 {
-  AudioIOCTL(0x85); //stop track
+  ROLLERStopTrack();
+  //AudioIOCTL(0x85); //stop track
   track_playing = 0;
 }
 
@@ -616,6 +481,8 @@ void cdxdone()
   cdbuffer = NULL;
   iobuffer = NULL;
 
+  CleanupAudioCD();
+
   //memset(&sregs, 0, sizeof(sregs));
   //regs.w.dx = cdselector;
   //regs.w.ax = 257;
@@ -630,13 +497,16 @@ void cdxdone()
 //00075660
 int cdpresent()
 {
-  int iSuccess = 0;
+  //added by ROLLER
+  return (g_szCDPath[0] != '\0') ? -1 : 0;
 
-  for (int i = 0; i < numCDdrives; ++i) {
-    if (!iSuccess)
-      iSuccess = checkCD(i + firstCDdrive);
-  }
-  return iSuccess;
+  //int iSuccess = 0;
+  //
+  //for (int i = 0; i < numCDdrives; ++i) {
+  //  if (!iSuccess)
+  //    iSuccess = checkCD(i + firstCDdrive);
+  //}
+  //return iSuccess;
 }
 
 //-------------------------------------------------------------------------------------------------

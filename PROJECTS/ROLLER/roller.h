@@ -16,6 +16,7 @@ extern bool g_bPaletteSet;
 extern bool g_bForceMaxDraw;
 extern uint8 testbuf[4096];
 extern char g_szCDPath[256];
+extern bool g_bRepeat;
 
 //-------------------------------------------------------------------------------------------------
 
@@ -70,6 +71,11 @@ int GetHighOrderRand(int iRange, int iRandValue);
 int ReadUnalignedInt(const void *pData);
 void LBAToMSF(uint32 uiLBA, uint8 *pbyMinute, uint8 *pbySecond, uint8 *pbyFrame);
 int GetCDPath();
+void ROLLERGetAudioInfo();
+void ROLLERStopTrack();
+void ROLLERPlayTrack(int iTrack);
+void ROLLERPlayTrack4(int iStartTrack);
+void CleanupAudioCD();
 
 //-------------------------------------------------------------------------------------------------
 #endif
