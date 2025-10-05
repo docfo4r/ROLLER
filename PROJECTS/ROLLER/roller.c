@@ -1871,7 +1871,7 @@ void ROLLERPlayTrack4(int iStartTrack)
 
 //-------------------------------------------------------------------------------------------------
 // Call this periodically to handle track transitions and repeat
-void UpdateAudioTracks()
+void UpdateAudioTracks(void)
 {
   bool bTrackFinished = false;
 
@@ -1881,14 +1881,38 @@ void UpdateAudioTracks()
 
   if (g_bUsingRealCD) {
 #ifdef IS_WINDOWS
-    if (g_wDeviceID) {
+    if (g_wDeviceID != 0) {
       MCI_STATUS_PARMS mciStatusParms;
-      mciStatusParms.dwItem = MCI_STATUS_MODE;
-      mciSendCommand(g_wDeviceID, MCI_STATUS, MCI_STATUS_ITEM,
-                    (DWORD_PTR)&mciStatusParms);
 
-      if (mciStatusParms.dwReturn == MCI_MODE_STOP) {
-        bTrackFinished = true;
+      // First check if stopped
+      mciStatusParms.dwItem = MCI_STATUS_MODE;
+      if (mciSendCommand(g_wDeviceID, MCI_STATUS, MCI_STATUS_ITEM,
+                         (DWORD_PTR)&mciStatusParms) == 0) {
+        if (mciStatusParms.dwReturn == MCI_MODE_STOP) {
+          bTrackFinished = true;
+        } else if (mciStatusParms.dwReturn == MCI_MODE_PLAY) {
+            // Check if we're still on the same track
+          mciStatusParms.dwItem = MCI_STATUS_CURRENT_TRACK;
+          if (mciSendCommand(g_wDeviceID, MCI_STATUS, MCI_STATUS_ITEM,
+                             (DWORD_PTR)&mciStatusParms) == 0) {
+               // If we've moved past our track, it finished
+            if (mciStatusParms.dwReturn != g_iCurrentTrack) {
+              bTrackFinished = true;
+            }
+          }
+
+          // Alternative: Check position vs track length
+          mciStatusParms.dwItem = MCI_STATUS_POSITION;
+          if (mciSendCommand(g_wDeviceID, MCI_STATUS, MCI_STATUS_ITEM,
+                             (DWORD_PTR)&mciStatusParms) == 0) {
+            int iCurrentTrackPos = MCI_TMSF_TRACK(mciStatusParms.dwReturn);
+
+            // If position shows we're on a different track or at track 0
+            if (iCurrentTrackPos != g_iCurrentTrack || iCurrentTrackPos == 0) {
+              bTrackFinished = true;
+            }
+          }
+        }
       }
     }
 #elif defined(IS_LINUX)
@@ -1896,7 +1920,8 @@ void UpdateAudioTracks()
       struct cdrom_subchnl subchnl;
       subchnl.cdsc_format = CDROM_MSF;
       if (ioctl(g_iCDHandle, CDROMSUBCHNL, &subchnl) == 0) {
-        if (subchnl.cdsc_audiostatus == CDROM_AUDIO_COMPLETED) {
+        if (subchnl.cdsc_audiostatus == CDROM_AUDIO_COMPLETED ||
+            subchnl.cdsc_audiostatus == CDROM_AUDIO_NO_STATUS) {
           bTrackFinished = true;
         }
       }
@@ -1912,9 +1937,11 @@ void UpdateAudioTracks()
 
   if (bTrackFinished) {
     if (g_bRepeat) {
+      SDL_Log("Repeat track %d", g_iCurrentTrack);
         // Repeat current track
       ROLLERPlayTrack(g_iCurrentTrack);
     } else if (g_iTrackCount > 1) {
+      SDL_Log("Advance track");
         // PlayTrack4 sequence
       g_iTrackCount--;
       int iNextTrack = g_iCurrentTrack + 1;
