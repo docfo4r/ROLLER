@@ -1721,7 +1721,7 @@ void ROLLERGetAudioInfo()
       if (ioctl(g_iCDHandle, CDROMREADTOCHDR, &tochdr) == 0) {
           // First track is usually data (track 1), audio starts at track 2
         g_iNumTracks = tochdr.cdth_trk1;  // Last track number
-        g_bUsingRealCD = SDL_TRUE;
+        g_bUsingRealCD = true;
         break;
       }
       close(g_iCDHandle);
@@ -1891,7 +1891,7 @@ void UpdateAudioTracks()
       subchnl.cdsc_format = CDROM_MSF;
       if (ioctl(g_iCDHandle, CDROMSUBCHNL, &subchnl) == 0) {
         if (subchnl.cdsc_audiostatus == CDROM_AUDIO_COMPLETED) {
-          bTrackFinished = SDL_TRUE;
+          bTrackFinished = true;
         }
       }
     }
