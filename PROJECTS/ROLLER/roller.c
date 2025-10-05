@@ -1924,17 +1924,11 @@ void UpdateAudioTracks()
 
 //-------------------------------------------------------------------------------------------------
 
-void CleanupAudioCD()
+void CleanupAudioCD(void)
 {
-  SDL_Log("CleanupAudioCD");
   ROLLERStopTrack();
 
-#ifdef IS_WINDOWS
-  if (g_wDeviceID) {
-    mciSendCommand(g_wDeviceID, MCI_CLOSE, 0, 0);
-    g_wDeviceID = 0;
-  }
-#elif defined(IS_LINUX)
+#if defined(IS_LINUX)
   if (g_iCDHandle >= 0) {
     close(g_iCDHandle);
     g_iCDHandle = -1;
