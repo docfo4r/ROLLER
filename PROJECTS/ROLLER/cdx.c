@@ -499,7 +499,7 @@ void cdxdone()
 int cdpresent()
 {
   //added by ROLLER
-  return (g_szCDPath[0] != '\0') ? -1 : 0;
+  return (g_iNumTracks > 0) ? -1 : 0;
 
   //int iSuccess = 0;
   //

@@ -1683,8 +1683,8 @@ void readsoundconfig(void)
     MusicCD = -1;
   }
   
-  //hack, if CD not found force switch to MIDI
-  if (g_szCDPath[0] == '\0') {
+  //hack, if CD audio not found force switch to MIDI
+  if (g_iNumTracks == 0) {
     MusicCard = -1;
     MusicCD = 0;
   }

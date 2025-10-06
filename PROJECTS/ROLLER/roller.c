@@ -66,7 +66,6 @@ bool g_bForceMaxDraw = false; //TODO: figure out why this causes some flickering
 uint8 testbuf[4096];
 static uint8 *s_pRGBBuffer = NULL;
 static uint8 *s_pDebugBuffer = NULL;
-char g_szCDPath[256] = "";
 uint64 g_ullTimer150Ms = 0;
 
 SDL_Mutex *g_pTimerMutex = NULL;
@@ -249,15 +248,12 @@ void ToggleFullscreen()
 
 int InitSDL()
 {
-  if (GetCDPath())
-    SDL_Log("CD found: %s", g_szCDPath);
-  else
-    SDL_Log("No CD found");
-
   if (!SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK)) {
     SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
     return SDL_APP_FAILURE;
   }
+
+  ROLLERGetAudioInfo();
 
   // Change to the base path of the application
   const char *home_dir = SDL_GetBasePath();
@@ -1552,107 +1548,6 @@ void LBAToMSF(uint32 uiLBA, uint8 *pbyMinute, uint8 *pbySecond, uint8 *pbyFrame)
 
 //-------------------------------------------------------------------------------------------------
 
-int GetCDPath()
-{
-  char szFilename[256];
-  char buffer[20];
-  FILE *fp = NULL;
-  uint32 uiBytesRead;
-
-  // If we already found a valid path, check it first
-  if (g_szCDPath[0] != '\0') {
-    sprintf(szFilename, "%s/FATAL.EXE", g_szCDPath);
-    fp = ROLLERfopen(szFilename, "rb");
-    if (!fp) {
-      sprintf(szFilename, "%s/WHIP.EXE", g_szCDPath);
-      fp = ROLLERfopen(szFilename, "rb");
-    }
-
-    if (fp) {
-      uiBytesRead = (int)fread(buffer, 1, 20, fp);
-      fclose(fp);
-      if (uiBytesRead == 20)
-        return -1;
-    }
-
-    // Cached path didn't work, clear it
-    g_szCDPath[0] = '\0';
-  }
-
-#ifdef IS_WINDOWS
-  // Windows: iterate through all drive letters
-  for (char chDrive = 'A'; chDrive <= 'Z'; chDrive++) {
-    char szDrivePath[4];
-    sprintf(szDrivePath, "%c:", chDrive);
-
-    // Try FATAL.EXE
-    sprintf(szFilename, "%s/FATAL.EXE", szDrivePath);
-    fp = ROLLERfopen(szFilename, "rb");
-
-    if (!fp) {
-      // Try WHIP.EXE
-      sprintf(szFilename, "%s/WHIP.EXE", szDrivePath);
-      fp = ROLLERfopen(szFilename, "rb");
-    }
-
-    if (fp) {
-      uiBytesRead = (int)fread(buffer, 1, 20, fp);
-      fclose(fp);
-
-      if (uiBytesRead == 20) {
-        // Save the path for next time
-        strcpy(g_szCDPath, szDrivePath);
-        return -1;
-      }
-    }
-  }
-#else
-  // Linux/Mac: check mount points
-  // TODO load this from INI file
-  const char *szMountPoints[] = {
-    "/media/cdrom",
-    "/media/cdrom0",
-    "/media/cdrom1",
-    "/media/dvd",
-    "/mnt/cdrom",
-    "/mnt/dvd",
-    "/run/media/cdrom",
-    "/Volumes/FATAL",
-    "/Volumes/WHIPLASH",
-    "/cdrom"
-  };
-
-  int iMountCount = sizeof(szMountPoints) / sizeof(szMountPoints[0]);
-
-  for (int i = 0; i < iMountCount; i++) {
-    // Try FATAL.EXE
-    sprintf(szFilename, "%s/FATAL.EXE", szMountPoints[i]);
-    fp = ROLLERfopen(szFilename, "rb");
-
-    if (!fp) {
-      // Try WHIP.EXE
-      sprintf(szFilename, "%s/WHIP.EXE", szMountPoints[i]);
-      fp = ROLLERfopen(szFilename, "rb");
-    }
-
-    if (fp) {
-      uiBytesRead = (int)fread(buffer, 1, 20, fp);
-      fclose(fp);
-
-      if (uiBytesRead == 20) {
-        // Save the path for next time
-        strcpy(g_szCDPath, szMountPoints[i]);
-        return -1;
-      }
-    }
-  }
-#endif
-
-  return 0;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 // Globals for CD audio management
 int g_iNumTracks = 0;
 int g_iCurrentTrack = -1;
@@ -1675,8 +1570,6 @@ static int g_iCDHandle = -1;
 
 void ROLLERGetAudioInfo()
 {
-  SDL_Log("ROLLERGetAudioInfo");
-
   //only get info once
   if (g_bGotAudioInfo)
     return;
@@ -1821,7 +1714,7 @@ void ROLLERPlayTrack(int iTrack)
     char szTrackFile[256];
     SDL_AudioSpec spec;
 
-    sprintf(szTrackFile, "./audio/track%02d.wav", iTrack);
+    sprintf(szTrackFile, "../audio/track%02d.wav", iTrack);
     FILE *fp = ROLLERfopen(szTrackFile, "rb");
     if (fp) {
       fclose(fp);
