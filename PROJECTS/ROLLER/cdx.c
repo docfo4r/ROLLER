@@ -253,6 +253,7 @@ void GetAudioInfo()
 void PlayTrack(int iTrack)
 {
   ROLLERPlayTrack(iTrack);
+  g_bRepeat = true;
   //// Prepare audio control structure
   //playControl.byPlayFlag = 1;
   //playControl.uiStartSector = trackstarts[iTrack];

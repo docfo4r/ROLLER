@@ -1743,16 +1743,8 @@ void ROLLERGetAudioInfo()
 
     // Look for ripped tracks
     for (int iTrack = 2; iTrack <= 99; iTrack++) {
-      sprintf(szTrackFile, "./music/track%02d.ogg", iTrack);
+      sprintf(szTrackFile, "./audio/track%02d.wav", iTrack);
       fp = ROLLERfopen(szTrackFile, "rb");
-      if (!fp) {
-        sprintf(szTrackFile, "./music/track%02d.wav", iTrack);
-        fp = ROLLERfopen(szTrackFile, "rb");
-      }
-      if (!fp) {
-        sprintf(szTrackFile, "./music/track%02d.mp3", iTrack);
-        fp = ROLLERfopen(szTrackFile, "rb");
-      }
 
       if (fp) {
         fclose(fp);
@@ -1797,14 +1789,13 @@ void ROLLERStopTrack()
 
 void ROLLERPlayTrack(int iTrack)
 {
-  SDL_Log("ROLLERPlayTrack %d", iTrack);
-
 // CD audio tracks start at 2 (track 1 is data)
   if (iTrack < 2 || iTrack > g_iNumTracks) {
     return;
   }
 
   ROLLERStopTrack();
+  SDL_Log("ROLLERPlayTrack %d", iTrack);
 
   if (g_bUsingRealCD) {
 #ifdef IS_WINDOWS
@@ -1830,8 +1821,7 @@ void ROLLERPlayTrack(int iTrack)
     char szTrackFile[256];
     SDL_AudioSpec spec;
 
-    // Try different formats
-    sprintf(szTrackFile, "./music/track%02d.wav", iTrack);
+    sprintf(szTrackFile, "./audio/track%02d.wav", iTrack);
     FILE *fp = ROLLERfopen(szTrackFile, "rb");
     if (fp) {
       fclose(fp);
@@ -1855,7 +1845,6 @@ void ROLLERPlayTrack(int iTrack)
   }
 
   g_iCurrentTrack = iTrack;
-  g_bRepeat = false;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -1950,12 +1950,13 @@ void play_game(int iTrack)
       firework_display();
     if (!replayspeed && intro && !game_req)   // Exit replay if intro mode and no game requested
       racing = replayspeed;
-    if (track_playing && frames - start_cd > 36 * track_duration / 75)// Handle CD audio track looping based on duration
-    {
-      //StopTrack(); //removed by ROLLER
-      RepeatTrack();
-      start_cd = frames;
-    }
+    //removed by ROLLER, CD looping is handled in ROLLER code
+    //if (track_playing && frames - start_cd > 36 * track_duration / 75)// Handle CD audio track looping based on duration
+    //{
+    //  StopTrack();
+    //  RepeatTrack();
+    //  start_cd = frames;
+    //}
     if (network_on && net_quit && !intro)     // Handle network quit requests
       racing = 0;
     if (player_type == 2)                     // Handle end-of-race conditions for different player modes
