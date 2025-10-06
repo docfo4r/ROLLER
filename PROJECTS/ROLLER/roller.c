@@ -1934,12 +1934,10 @@ void UpdateAudioTracks(void)
         // PlayTrack4 sequence
       g_iTrackCount--;
       int iNextTrack = g_iCurrentTrack + 1;
-      if (iNextTrack > g_iNumTracks) {
-        iNextTrack = 2;  // Wrap to first audio track
-      }
       ROLLERPlayTrack(iNextTrack);
     } else {
-      g_iCurrentTrack = -1;
+      g_iTrackCount = 4;
+      ROLLERPlayTrack(g_iStartTrack);
     }
   }
 }
