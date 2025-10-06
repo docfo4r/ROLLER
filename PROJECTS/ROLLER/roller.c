@@ -254,14 +254,14 @@ int InitSDL()
     return SDL_APP_FAILURE;
   }
 
-  ROLLERGetAudioInfo();
-
   // Change to the base path of the application
   const char *home_dir = SDL_GetBasePath();
   if (home_dir) {
     chdir(home_dir);
     SDL_free((void *)home_dir);
   }
+
+  ROLLERGetAudioInfo();
 
   // check if the ./FATDATA/FATAL.INI to ensure the game can run
   if (!ROLLERfexists("./FATDATA/FATAL.INI")) {
@@ -1558,6 +1558,7 @@ int g_iCDVolume = 0;
 bool g_bRepeat = false;
 bool g_bUsingRealCD = false;
 bool g_bGotAudioInfo = false;
+bool g_bSentCDVolWarning = false;
 
 // For fallback to audio files if no CD
 static SDL_AudioStream *g_pCurrentStream = NULL;
@@ -1769,9 +1770,15 @@ void ROLLERSetAudioVolume(int iVolume)
       mciSetAudioParms.dwItem = MCI_DGV_SETAUDIO_VOLUME;
       mciSetAudioParms.dwValue = (iVolume * 1000) / 255;  // MCI uses 0-1000
 
-      mciSendCommand(g_wDeviceID, MCI_SETAUDIO,
-                    MCI_DGV_SETAUDIO_VALUE | MCI_DGV_SETAUDIO_ITEM,
-                    (DWORD_PTR)&mciSetAudioParms);
+      DWORD dwResult = mciSendCommand(g_wDeviceID, MCI_SETAUDIO,
+                                      MCI_DGV_SETAUDIO_VALUE | MCI_DGV_SETAUDIO_ITEM,
+                                      (DWORD_PTR)&mciSetAudioParms);
+      if (dwResult != 0) {
+        if (!g_bSentCDVolWarning) {
+          SDL_Log("CD volume control not supported on this system");
+          g_bSentCDVolWarning = true;
+        }
+      }
     }
 #elif defined(IS_LINUX)
     if (g_iCDHandle >= 0) {
