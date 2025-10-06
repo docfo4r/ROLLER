@@ -316,31 +316,32 @@ void StopTrack()
 //000752E0
 void SetAudioVolume(int iVolume)
 {
-  int iUseVolume; // eax
-  tVolumeControl volCtrl; // [esp+0h] [ebp-14h] BYREF
-
-  // Double the volume level (range expansion)
-  iUseVolume = 2 * iVolume;
-
-  // Clamp volume to [1, 255]
-  if (iUseVolume < 1)
-    iUseVolume = 1;
-  if (iUseVolume > 255)
-    iUseVolume = 255;
-
-  // Prepare volume control struct
-  volCtrl.byVolChMaster = iUseVolume;
-  volCtrl.byVolLeft = iUseVolume;
-  volCtrl.byVolRight = iUseVolume;
-  volCtrl.unused = iUseVolume;                  // set but ignored?
-  volCtrl.byCommand = 3;
-  volCtrl.byChannelBase = 0;
-  volCtrl.byChannelLeft = 1;
-  volCtrl.byChannelRight = 2;
-  volCtrl.byTerminator = 3;
-
-  // Send volume command
-  WriteIOCTL(0xCu, 9u, &volCtrl);
+  ROLLERSetAudioVolume(iVolume);
+  //int iUseVolume; // eax
+  //tVolumeControl volCtrl; // [esp+0h] [ebp-14h] BYREF
+  //
+  //// Double the volume level (range expansion)
+  //iUseVolume = 2 * iVolume;
+  //
+  //// Clamp volume to [1, 255]
+  //if (iUseVolume < 1)
+  //  iUseVolume = 1;
+  //if (iUseVolume > 255)
+  //  iUseVolume = 255;
+  //
+  //// Prepare volume control struct
+  //volCtrl.byVolChMaster = iUseVolume;
+  //volCtrl.byVolLeft = iUseVolume;
+  //volCtrl.byVolRight = iUseVolume;
+  //volCtrl.unused = iUseVolume;                  // set but ignored?
+  //volCtrl.byCommand = 3;
+  //volCtrl.byChannelBase = 0;
+  //volCtrl.byChannelLeft = 1;
+  //volCtrl.byChannelRight = 2;
+  //volCtrl.byTerminator = 3;
+  //
+  //// Send volume command
+  //WriteIOCTL(0xCu, 9u, &volCtrl);
 }
 
 //-------------------------------------------------------------------------------------------------

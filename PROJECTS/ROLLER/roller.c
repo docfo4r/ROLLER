@@ -16,6 +16,7 @@
 #include <direct.h>
 #include <windows.h>
 #include <mmsystem.h>
+#include <digitalv.h>
 #pragma comment(lib, "winmm.lib")
 #define chdir _chdir
 #define open _open
@@ -1553,6 +1554,7 @@ int g_iNumTracks = 0;
 int g_iCurrentTrack = -1;
 int g_iStartTrack = -1;   // For PlayTrack4
 int g_iTrackCount = 0;    // For PlayTrack4
+int g_iCDVolume = 0;
 bool g_bRepeat = false;
 bool g_bUsingRealCD = false;
 bool g_bGotAudioInfo = false;
@@ -1730,6 +1732,8 @@ void ROLLERPlayTrack(int iTrack)
           if (g_pCurrentStream) {
             SDL_PutAudioStreamData(g_pCurrentStream, g_pAudioData, g_uiAudioLen);
             SDL_ResumeAudioStreamDevice(g_pCurrentStream);
+            float fGain = g_iCDVolume / 255.0f;
+            SDL_SetAudioStreamGain(g_pCurrentStream, fGain);
           }
         }
       }
@@ -1749,6 +1753,49 @@ void ROLLERPlayTrack4(int iStartTrack)
   g_bRepeat = false;
 
   ROLLERPlayTrack(iStartTrack);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void ROLLERSetAudioVolume(int iVolume)
+{
+  g_iCDVolume = iVolume;
+
+  if (g_bUsingRealCD) {
+#ifdef IS_WINDOWS
+    if (g_wDeviceID != 0) {
+        // Method 1: Using MCI
+      MCI_DGV_SETAUDIO_PARMS mciSetAudioParms;
+      mciSetAudioParms.dwItem = MCI_DGV_SETAUDIO_VOLUME;
+      mciSetAudioParms.dwValue = (iVolume * 1000) / 255;  // MCI uses 0-1000
+
+      mciSendCommand(g_wDeviceID, MCI_SETAUDIO,
+                    MCI_DGV_SETAUDIO_VALUE | MCI_DGV_SETAUDIO_ITEM,
+                    (DWORD_PTR)&mciSetAudioParms);
+    }
+#elif defined(IS_LINUX)
+    if (g_iCDHandle >= 0) {
+        // Linux CD-ROM volume control
+      struct cdrom_volctrl volume;
+
+      // All channels set to same volume (0-255 range)
+      uint8 byLinuxVolume = iVolume;
+      volume.channel0 = byLinuxVolume;
+      volume.channel1 = byLinuxVolume;
+      volume.channel2 = byLinuxVolume;
+      volume.channel3 = byLinuxVolume;
+
+      ioctl(g_iCDHandle, CDROMVOLCTRL, &volume);
+    }
+#endif
+  } else {
+      // Set volume for SDL audio stream
+    if (g_pCurrentStream) {
+        // SDL3 gain: 1.0 = normal, 0.0 = silence
+      float fGain = iVolume / 255.0f;
+      SDL_SetAudioStreamGain(g_pCurrentStream, fGain);
+    }
+  }
 }
 
 //-------------------------------------------------------------------------------------------------
