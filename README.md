@@ -10,7 +10,7 @@ This project aims to implement all the functionality of the 1995 game Whiplash/F
 [![On track!](https://img.youtube.com/vi/JvoiQTRjt88/maxresdefault.jpg)](https://www.youtube.com/watch?v=JvoiQTRjt88)
 
 ## Installation
-Assets from a retail copy of the game are required to run. Drop the contents of the build directory (bin or zig-out) into the Whiplash/Fatal Racing install directory. ROLLER.exe should be in the same directory as WHIP.EXE/FATAL.EXE.
+Assets from a retail copy of the game are required to run. Drop the contents of the build archive into the Whiplash/Fatal Racing install directory. ROLLER.exe should be in the same directory as WHIP.EXE/FATAL.EXE.
 
 ## About
 
