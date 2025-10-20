@@ -1,4 +1,4 @@
-#include "control.h"
+﻿#include "control.h"
 #include "view.h"
 #include "loadtrak.h"
 #include "sound.h"
@@ -6373,20 +6373,29 @@ void ordercars()
         {
           byLapNumber = pNextCar->byLapNumber;
           byCurrentProgress = pCurrentCar->byLapNumber;
-          if (byLapNumber <= byCurrentProgress)// Compare race progress (byUnk24 - likely lap/sector progress)
-          {                                     // If same progress, compare by track position (chunk and X coordinate)
-            if (byLapNumber == byCurrentProgress) {
-              nCurrChunk = pNextCar->nCurrChunk;
-              if (nCurrChunk > pCurrentCar->nCurrChunk || nCurrChunk == pCurrentCar->nCurrChunk && pNextCar->pos.fX > (double)pCurrentCar->pos.fX) {
-                iSwapCarIndex = carorder[uiSortIndex / 4];// Swap car positions: next car is ahead by position
-                carorder[uiSortIndex / 4] = carorder[uiSortIndex / 4 + 1];
-                carorder[uiSortIndex / 4 + 1] = iSwapCarIndex;
-              }
-            }
-          } else {
-            iTempCarIndex = carorder[uiSortIndex / 4];// Swap car positions: next car is ahead in progress
+          if (byLapNumber > byCurrentProgress) {
+    // Next car is on a higher lap → should be ahead
+            iTempCarIndex = carorder[uiSortIndex / 4];
             carorder[uiSortIndex / 4] = carorder[uiSortIndex / 4 + 1];
             carorder[uiSortIndex / 4 + 1] = iTempCarIndex;
+          } else if (byLapNumber == byCurrentProgress) {
+              // Same lap → compare track progress
+            int nNextChunk = pNextCar->nCurrChunk;
+            int nCurrChunk2 = pCurrentCar->nCurrChunk;
+
+            // Handle wrap-around safely (start/finish line crossing)
+            int chunkDiff = nNextChunk - nCurrChunk2;
+            if (chunkDiff < -TRAK_LEN / 2)
+              chunkDiff += TRAK_LEN;
+            else if (chunkDiff > TRAK_LEN / 2)
+              chunkDiff -= TRAK_LEN;
+
+            if (chunkDiff > 0 || (chunkDiff == 0 && pNextCar->pos.fX > pCurrentCar->pos.fX)) {
+                // Next car is ahead on track
+              iSwapCarIndex = carorder[uiSortIndex / 4];
+              carorder[uiSortIndex / 4] = carorder[uiSortIndex / 4 + 1];
+              carorder[uiSortIndex / 4 + 1] = iSwapCarIndex;
+            }
           }
         }
       }
